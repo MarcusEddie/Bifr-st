@@ -7,9 +7,9 @@ const Settings = {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: 'Heimdallr Platform',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://res.cloudinary.com/jknight/image/upload/v1628662368/Heimdallr/logo.png',
   iconfontUrl: '',
 };
 export default Settings;

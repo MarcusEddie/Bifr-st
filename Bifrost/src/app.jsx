@@ -117,10 +117,6 @@ export const layout = ({ initialState }) => {
             <LinkOutlined />
             <span>OpenAPI 文档</span>
           </Link>,
-          <Link to="/~docs">
-            <BookOutlined />
-            <span>业务组件文档</span>
-          </Link>,
         ]
       : [],
     menuHeaderRender: undefined,
