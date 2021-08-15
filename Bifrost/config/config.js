@@ -275,6 +275,25 @@ export default defineConfig({
       ],
     },
     {
+      name: 'caseMaintain',
+      icon: 'highlight',
+      path: '/caseMaintain',
+      routes: [
+        {
+          name: 'create',
+          icon: 'smile',
+          path: '/caseMaintain/create',
+          component: './caseMaintain/create',
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/caseMaintain/dashboard',
+          component: './caseMaintain/dashboard',
+        },
+      ],
+    },
+    {
       path: '/',
       redirect: '/dashboard/analysis',
     },

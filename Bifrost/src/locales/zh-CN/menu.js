@@ -49,4 +49,8 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+  'menu.register-result':'结果',
+  'menu.caseMaintain': '测试用例维护',
+  'menu.caseMaintain.create': '测试用例创建',
+  'menu.caseMaintain.dashboard': '测试用例查询',
 };
