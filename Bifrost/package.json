@@ -109,6 +109,7 @@
     "express": "^4.17.1",
     "gh-pages": "^3.0.0",
     "jsdom-global": "^3.0.2",
+    "jsmind": "^0.4.6",
     "lint-staged": "^10.0.0",
     "mockjs": "^1.0.1-beta3",
     "prettier": "^2.3.2",
