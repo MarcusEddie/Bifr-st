@@ -280,10 +280,28 @@ export default defineConfig({
       path: '/caseMaintain',
       routes: [
         {
-          name: 'create',
-          icon: 'smile',
           path: '/caseMaintain/create',
+          name: 'create',
           component: './caseMaintain/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'caseMaintain/create',
+              redirect: '/caseMaintain/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/caseMaintain/create/mindMap',
+              component: './caseMaintain/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/caseMaintain/create/single',
+              component: './caseMaintain/create/single',
+            },
+          ],
         },
         {
           name: 'dashboard',

@@ -52,5 +52,7 @@ export default {
   'menu.register-result':'结果',
   'menu.caseMaintain': '测试用例维护',
   'menu.caseMaintain.create': '测试用例创建',
+  'menu.caseMaintain.create.mindMap': '脑图模式',
+  'menu.caseMaintain.create.single': '手工模式',
   'menu.caseMaintain.dashboard': '测试用例查询',
 };
