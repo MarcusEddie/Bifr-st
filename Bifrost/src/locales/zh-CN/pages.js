@@ -64,4 +64,12 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+  'pages.caseMaintain.create.single.headerDescription': '选择一个功能，然后创建单个测试用例',
+  'pages.caseMaintain.create.single.formName': '单用例创建',
+  'pages.caseMaintain.create.single.system': '系统',
+  'pages.caseMaintain.create.single.module': '模块',
+  'pages.caseMaintain.create.single.function': '功能',
+  'pages.caseMaintain.create.single.funcFetch': '功能列表',
+  'pages.caseMaintain.action.new': '新建',
+  'pages.caseMaintain.action.delete': '删除',
 };
