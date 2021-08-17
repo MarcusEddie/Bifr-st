@@ -5,7 +5,7 @@ import { Button, Card, Col, Row } from 'antd';
 import { useIntl } from 'umi';
 import styles from './style.less';
 
-const SingleForm = (props) => {
+const SingleForm = () => {
   const intl = useIntl();
 
   const onFinish = async (values) => {
@@ -13,10 +13,7 @@ const SingleForm = (props) => {
   };
 
   return (
-    <PageContainer content={intl.formatMessage({
-      id: 'pages.caseMaintain.create.single.headerDescription',
-    })}
-    >
+    <>
       <Card title={intl.formatMessage({
                 id: 'pages.caseMaintain.create.single.funcFetch',
               })} className={styles.card} bordered={false}>
@@ -203,8 +200,7 @@ const SingleForm = (props) => {
 
         </ProForm>
       </Card>
-      {props.children}
-    </PageContainer>
+    </>
   );
 };
 
