@@ -70,6 +70,10 @@ export default {
   'pages.caseMaintain.create.single.module': '模块',
   'pages.caseMaintain.create.single.function': '功能',
   'pages.caseMaintain.create.single.funcFetch': '功能列表',
+  'pages.caseMaintain.create.single.newFunc': '添加新功能',
+  'pages.caseMaintain.create.single.delunc': '确定删除当前选中的功能么？',
   'pages.caseMaintain.action.new': '新建',
   'pages.caseMaintain.action.delete': '删除',
+  'pages.caseMaintain.create.mindMap': '脑图模式',
+  'pages.caseMaintain.create.single': '手工模式',
 };

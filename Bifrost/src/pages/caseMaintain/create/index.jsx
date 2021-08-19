@@ -5,11 +5,25 @@ import { history } from 'umi';
 const tabList = [
   {
     key: 'mindMap',
-    tab: '脑图模式',
+    // tab: (
+    //   <span>
+    //     {formatMessage({
+    //       id: 'menu.caseMaintain.create.mindMap',
+    //     })}
+    //   </span>
+    // ),
+    tab: 'MIND',
   },
   {
     key: 'single',
-    tab: '手工模式',
+    // tab: (
+    //   <span>
+    //     {formatMessage({
+    //       id: 'menu.caseMaintain.create.single',
+    //     })}
+    //   </span>
+    // ),
+    tab: 'SINGLE',
   },
 ];
 
