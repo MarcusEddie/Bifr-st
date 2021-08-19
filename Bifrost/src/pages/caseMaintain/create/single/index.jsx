@@ -338,11 +338,7 @@ const SingleForm = () => {
             </Button>
           </Col>
         </Row>
-        <ModalForm title={intl.formatMessage({ id: 'pages.caseMaintain.create.single.newFunc', })}
-          width="400px"
-          preserve={false}
-          visible={createModalVisible}
-          onVisibleChange={handleNewModalVisible}
+        <ModalForm title={intl.formatMessage({ id: 'pages.caseMaintain.create.single.newFunc', })} width="400px" preserve={false} visible={createModalVisible} onVisibleChange={handleNewModalVisible}
           onFinish={async (value) => {
             const success = await handleAdd(value);
 
@@ -364,8 +360,6 @@ const SingleForm = () => {
             },
           }}
         >
-
-
           <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.system', })}>
             <Select showSearch name="addNewSystem" mode="multiple" style={{ width: '100%' }} placeholder="Please select a system" defaultValue={secondSystem12} onChange={handleSystemChange12}>
               {systemData.map(system => (
@@ -389,11 +383,7 @@ const SingleForm = () => {
             </Select>,
           </Form.Item>
         </ModalForm>
-        <ModalForm title={intl.formatMessage({ id: 'pages.caseMaintain.create.single.delunc', })}
-          preserve={false}
-          width="400px"
-          visible={delModalVisible}
-          onVisibleChange={handleDelModalVisible}
+        <ModalForm title={intl.formatMessage({ id: 'pages.caseMaintain.create.single.delunc', })} preserve={false} width="400px" visible={delModalVisible} onVisibleChange={handleDelModalVisible}
           submitter={{
             resetButtonProps: {
               style: {
@@ -426,88 +416,32 @@ const SingleForm = () => {
           </Form.Item>
         </ModalForm>
       </Card>
-      <Card
-        style={{
-          marginTop: 24,
-        }}
-        bordered={false}
-        bodyStyle={{
-          padding: '8px 32px 32px 32px',
-        }}>
-        <ProForm hideRequiredMark style={{ margin: 'auto', marginTop: 8, maxWidth: 600, }}
-          name="pages.caseMaintain.create.single.formName"
-          layout="vertical"
-          onFinish={onFinish}
-        >
-          <Form.Item label={intl.formatMessage({
-            id: 'pages.caseMaintain.create.single.system',
-          })}
-            rules={[{ required: true, message: 'Please select a system' },
-            ]}>
-            <Select
-              showSearch
-              style={{ width: '60%' }}
-              placeholder="Please select a system"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              filterSort={(optionA, optionB) =>
-                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-              }
-              defaultValue={systemData[0]} onChange={handleSystemChange1}
+      <Card style={{ marginTop: 24,  }} bordered={false} bodyStyle={{ padding: '8px 32px 32px 32px', }}>
+        <ProForm hideRequiredMark style={{ margin: 'auto', marginTop: 8, maxWidth: 600, }} name="pages.caseMaintain.create.single.formName" layout="vertical" onFinish={onFinish}>
+          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.system', })} rules={[{ required: true, message: 'Please select a system' },]}>
+            <Select showSearch style={{ width: '60%' }} placeholder="Please select a system" optionFilterProp="children" defaultValue={systemData[0]} onChange={handleSystemChange1}
+              filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
             >
-              {systemData.map(system => (
-                <Option key={system}>{system}</Option>
-              ))}
+              {systemData.map(system => (<Option key={system}>{system}</Option>))}
             </Select>,
           </Form.Item >
 
-          <Form.Item label={intl.formatMessage({
-            id: 'pages.caseMaintain.create.single.module',
-          })}
-            rules={[{ required: true, message: 'Please select a module' },
-            ]}>
-            <Select
-              showSearch
-              style={{ width: '60%' }}
-              placeholder="Please select a module"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              filterSort={(optionA, optionB) =>
-                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-              }
-              value={secondCity1} onChange={handleModuleChange1}
+          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', })} rules={[{ required: true, message: 'Please select a module' },]}>
+            <Select showSearch style={{ width: '60%' }} placeholder="Please select a module" optionFilterProp="children" value={secondCity1} onChange={handleModuleChange1}
+              filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
             >
-              {modules1.map(mde => (
-                <Option key={mde}>{mde}</Option>
-              ))}
+              {modules1.map(mde => (<Option key={mde}>{mde}</Option>))}
             </Select>,
           </Form.Item >
 
-          <Form.Item label={intl.formatMessage({
-            id: 'pages.caseMaintain.create.single.function',
-          })}
-            rules={[{ required: true, message: 'Please select your function!' },
-            ]}>
-            <Select
-              showSearch
-              style={{ width: '60%' }}
-              placeholder="Please select a function"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              filterSort={(optionA, optionB) =>
-                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-              }
-              value={secondFunc1} onChange={handleFuncChange1}
+          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })} rules={[{ required: true, message: 'Please select your function!' },]}>
+            <Select showSearch style={{ width: '60%' }} placeholder="Please select a function" optionFilterProp="children" value={secondFunc1} onChange={handleFuncChange1}
+              filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
             >
-              {funcs1.map(fcs => (
-                <Option key={fcs}>{fcs}</Option>
-              ))}
+              {funcs1.map(fcs => (<Option key={fcs}>{fcs}</Option>))}
             </Select>,
           </Form.Item >
         </ProForm>
