@@ -88,4 +88,10 @@ export default {
   'pages.caseMaintain.create.case.caseInfo.complete': '测试用例信息填写',
   'pages.caseMaintain.create.case.caseAdd.complete': '创建成功',
   'pages.caseMaintain.create.case.function.notAvailable': '不可用',
+  'pages.caseMaintain.create.mind.batchMode.title': '脑图批量创建模式',
+  'pages.caseMaintain.create.mind.copyFuncVal': '点击复制功能名称',
+  'pages.caseMaintain.create.case.current.selected': '当前所选',
+  'pages.caseMaintain.create.mind.batchMode.success': '测试用例保存成功',
+  'pages.caseMaintain.create.mind.batchMode.fail': '测试用例保存失败，请重试',
+  'pages.caseMaintain.create.mind.batchMode.initVal': '请输入一个功能名称',
 };

@@ -1,10 +1,10 @@
-import ProForm, { ModalForm, StepsForm } from '@ant-design/pro-form';
+import { ModalForm, StepsForm } from '@ant-design/pro-form';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
-import { Button, Card, Col, Row, Select, Form, Input, message, Result, Descriptions, Statistic, Divider } from 'antd';
+import { Button, Card, Col, Row, Select, Form, Input, message, Descriptions, Divider } from 'antd';
 import { useIntl } from 'umi';
 import styles from './style.less';
-import { getFunctions, getFunctionById, getModules, getApps, saveNewAppComponent, deleteAppComponent, saveOneCase } from './service';
+import { getFunctions, getFunctionById, getModules, getApps, saveNewAppComponent, deleteAppComponent, saveOneCase } from '@/services/backend/api';
 
 const { Option } = Select;
 const { TextArea } = Input;

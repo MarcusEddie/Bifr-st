@@ -95,3 +95,15 @@ export async function saveOneCase(fields, pFuncId) {
     },
   });
 }
+
+export async function saveMultiCases(fields) {
+  return request('/api/testcase/saveMultiCases', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      jsonData: fields
+    },
+  });
+}
