@@ -90,6 +90,43 @@ export default defineConfig({
       ],
     },
     {
+      name: 'caseMaintain',
+      icon: 'highlight',
+      path: '/caseMaintain',
+      routes: [
+        {
+          path: '/caseMaintain/create',
+          name: 'create',
+          component: './caseMaintain/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'caseMaintain/create',
+              redirect: '/caseMaintain/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/caseMaintain/create/mindMap',
+              component: './caseMaintain/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/caseMaintain/create/single',
+              component: './caseMaintain/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/caseMaintain/dashboard',
+          component: './caseMaintain/dashboard',
+        },
+      ],
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',
@@ -272,43 +309,6 @@ export default defineConfig({
           icon: 'smile',
           path: '/editor/koni',
           component: './editor/koni',
-        },
-      ],
-    },
-    {
-      name: 'caseMaintain',
-      icon: 'highlight',
-      path: '/caseMaintain',
-      routes: [
-        {
-          path: '/caseMaintain/create',
-          name: 'create',
-          component: './caseMaintain/create',
-          icon: 'smile',
-          routes: [
-            {
-              path: 'caseMaintain/create',
-              redirect: '/caseMaintain/create/mindMap'
-            },
-            {
-              name: 'mindMap',
-              icon: 'smile',
-              path: '/caseMaintain/create/mindMap',
-              component: './caseMaintain/create/mindMap',
-            },
-            {
-              name: 'single',
-              icon: 'smile',
-              path: '/caseMaintain/create/single',
-              component: './caseMaintain/create/single',
-            },
-          ],
-        },
-        {
-          name: 'dashboard',
-          icon: 'smile',
-          path: '/caseMaintain/dashboard',
-          component: './caseMaintain/dashboard',
         },
       ],
     },
