@@ -79,31 +79,3 @@ export async function deleteAppComponent(pAppId, pModuleId, pFuncId) {
     },
   });
 }
-
-export async function saveOneCase(fields, pFuncId) {
-  return request('/api/testcase/saveOneCase', { 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: {
-      functionId: pFuncId,
-      name: fields.caseNameForm,
-      description: fields.caseDesriptionForm,
-      steps: fields.caseStepsForm,
-      results: fields.caseExpectedRsForm
-    },
-  });
-}
-
-export async function saveMultiCases(fields) {
-  return request('/api/testcase/saveMultiCases', { 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: {
-      jsonData: fields
-    },
-  });
-}

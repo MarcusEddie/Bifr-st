@@ -5,8 +5,9 @@ import { MindToolbar } from './components/EditorToolbar';
 import { MindContextMenu } from './components/EditorContextMenu';
 import { useIntl } from 'umi';
 import styles from './style.less';
-import { getFunctions, getFunctionById, getModules, getApps } from '@/services/backend/api';
+import { getFunctions, getFunctionById, getModules, getApps } from '@/services/backend/app';
 import Save from './components/SaveButton';
+import mockData from './mockData.json';
 
 const { Paragraph } = Typography;
 
@@ -22,15 +23,9 @@ const MindMap = () => {
   const [moduleValInFuncList, setModuleValInFuncList] = React.useState(ALL);
   const [funcs, setFuncs] = React.useState([]);
   const [funcValInFuncList, setFuncValInFuncList] = React.useState(ALL);
+  const [funcIdSelected, setFuncIdSelected] = React.useState(0);
 
-  const initRoot = {
-    roots: [
-      {
-        label: intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.initVal', }),
-        children: []
-      }
-    ]
-  };
+  const initRoot = mockData;
 
   const getModulesByAppId = async (fields) => {
     try {
@@ -63,6 +58,8 @@ const MindMap = () => {
     setModuleValInFuncList(modulesByApp.data[0].name);// fill the first value to the next select component
     setFuncs(funcsByModule.data);
     setFuncValInFuncList(funcsByModule.data[0].name);
+    // window.console.log(`selected function id is ${funcsByModule.data[0].id}`);
+    setFuncIdSelected(funcsByModule.data[0].id);
   };
 
   const handleModuleChange = async (value) => {
@@ -70,12 +67,16 @@ const MindMap = () => {
     setModuleValInFuncList(value);// fill the selected value to the ui
     setFuncs(funcsByModule.data);
     setFuncValInFuncList(funcsByModule.data[0].name);
+    // window.console.log(`selected function id is ${funcsByModule.data[0].id}`);
+    setFuncIdSelected(funcsByModule.data[0].id);
   };
 
   const handleFuncChange = async (value) => {
     const func = await getFunctionById(value);
     if (func && func.data) {
       setFuncValInFuncList(func.data.name);
+      // window.console.log(`selected function id is ${func.data.id}`);
+      setFuncIdSelected(func.data.id);
     } else {
       const errMsg = `${intl.formatMessage({ id: 'pages.caseMaintain.create.case.current.selected', })}${intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })} ${intl.formatMessage({ id: 'pages.caseMaintain.create.case.function.notAvailable', })}`;
       message.error(errMsg);
@@ -135,7 +136,8 @@ const MindMap = () => {
           </Row>
           <MindContextMenu />
           <Save submitBtnName={intl.formatMessage({ id: 'pages.caseMaintain.action.new', })} resetBtnName={intl.formatMessage({ id: 'pages.caseMaintain.create.case.cancel', })}
-            successMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.success', })} failedMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.fail', })} initVal={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.initVal', })} />
+            successMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.success', })} failedMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.fail', })} initVal={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.initVal', })} 
+            functionId={funcIdSelected}/>
         </GGEditor>
       </Card>
     </>

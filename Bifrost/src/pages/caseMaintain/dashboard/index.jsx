@@ -1,275 +1,413 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { Select, message, Table, Space, Popconfirm, Divider } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { useIntl } from 'umi';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from './service';
+import ViewForm from './components/ViewForm';
+import BulkActions from './components/BulkActions';
+import { getFunctions, getModules, getApps } from '@/services/backend/app';
+import { getTestCaseState, getTestCasesByParams, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
 
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
-
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-/**
- * 更新节点
- *
- * @param fields
- */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
+/* eslint no-underscore-dangle: 0 */
+const __rest = (this && this.__rest) || function (s, e) {
+  const t = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+    t[p] = s[p];
+  if (s != null && typeof Object.getOwnPropertySymbols === "function")
+    for (let i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i += 1) {
+      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+        t[p[i]] = s[p[i]];
+    }
+  return t;
 };
 
-const TableList = () => {
-  /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState(false);
-  /** 分布更新窗口的弹窗 */
+const loadingModules = async (rootId) => {
+  const rs = [];
+  const modules = await getModules(rootId);
+  if (modules && modules.data) {
+    return modules.data;
+  }
+  return rs;
+}
 
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
+const loadingFuncs = async (rootId) => {
+  const rs = [];
+  const funcs = await getFunctions(rootId);
+  if (funcs && funcs.data) {
+    return funcs.data;
+  }
+  return rs;
+}
+
+const TestCasesList = () => {
+  const intl = useIntl();
   const actionRef = useRef();
+  const [updateModalVisible, handleUpdateModalVisible] = useState(false);
+  const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
-  const [selectedRowsState, setSelectedRows] = useState([]);
-  /** 国际化配置 */
+
+  const ModuleSelect = (props) => {
+    const { state } = props;
+    const [innerOptions, setOptions] = useState([]);
+    useEffect(() => {
+      const { rootId } = state || {};
+      const modules = loadingModules(rootId);
+      const rs = [];
+      rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
+      modules.then((data) => {
+        for (let i = 0; i < data.length; i += 1) {
+          rs.push({ label: data[i].name, value: data[i].id });
+        }
+        setOptions(rs);
+      })
+    }, [JSON.stringify(state)]);
+    return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
+  };
+
+  const FuncSelect = (props) => {
+    const { state } = props;
+    const [innerOptions, setOptions] = useState([]);
+    useEffect(() => {
+      const { rootId } = state || {};
+      const funcs = loadingFuncs(rootId);
+      const rs = [];
+      rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
+      funcs.then((data) => {
+        for (let i = 0; i < data.length; i += 1) {
+          rs.push({ label: data[i].name, value: data[i].id });
+        }
+        setOptions(rs);
+      })
+
+    }, [JSON.stringify(state)]);
+    return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
+  };
+
+  const loadingApps = async () => {
+    const rs = [];
+    const appsRs = await getApps();
+    if (appsRs && appsRs.data) {
+      for (let i = 0; i < appsRs.data.length; i += 1) {
+        rs.push({ label: appsRs.data[i].name, value: appsRs.data[i].id });
+      }
+    }
+    return rs;
+  }
+
+  const loadingTestCaseState = async () => {
+    const rs = [];
+    const states = await getTestCaseState();
+    if (states && states.data) {
+      for (let i = 0; i < states.data.length; i += 1) {
+        const labelId = `pages.caseMaintain.dashboard.status.${states.data[i]}`;
+        rs.push({ label: intl.formatMessage({ id: labelId, }), value: states.data[i] });
+      }
+    }
+
+    return rs;
+  }
+
+  const handleUpdateTestCases = async (fields) => {
+    const success = await updateTestCase(fields, currentRow.id);
+    if (success) {
+      return true;
+    }
+    message.error('更新失败请重试！');
+    return false;
+  };
+
+  const deactivateCurrentRow = async (value) => {
+    const success = await deactivateTestCaseById(value);
+    if (success) {
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    } else {
+      message.error("Disable failed, try again please");
+    }
+  }
+
+  const activateCurrentRow = async (value) => {
+    const success = await activateTestCaseById(value);
+    if (success) {
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    } else {
+      message.error("Disable failed, try again please");
+    }
+  }
+
+  const delCurrentRow = async (value) => {
+    const success = await delTestCaseById(value);
+    if (success) {
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    } else {
+      message.error("Delete failed, try again please");
+    }
+  }
+
+  const loadingData = async (fields, options) => {
+    const all = intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', });
+    if (fields.app && fields.app.toString() === all.toString()) {
+      message.error("Please select an app");
+      return false;
+    }
+
+    if (fields.module && fields.module.toString() === all.toString()) {
+      // eslint-disable-next-line no-param-reassign
+      fields.module = null;
+    }
+
+    if (fields.function && fields.function.toString() === all.toString()) {
+      // eslint-disable-next-line no-param-reassign
+      fields.function = null;
+    }
+    const data = await getTestCasesByParams(fields, options);
+
+    return data;
+  }
 
   const columns = [
     {
-      title: '规则名称',
+      title: 'ID',
+      dataIndex: 'id',
+      width: '5%',
+      ellipsis: false,
+      fixed: 'left',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', }),
       dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      width: '17%',
+      ellipsis: true,
+      fixed: 'left',
+      hideInSearch: true,
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val) => `${val}万`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
+      title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
+      dataIndex: 'state',
+      width: '3%',
+      hideInSearch: true,
       valueEnum: {
-        0: {
-          text: '关闭',
-          status: 'Default',
-        },
-        1: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        2: {
-          text: '已上线',
+        enabled: {
+          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.enabled', }),
           status: 'Success',
         },
-        3: {
-          text: '异常',
+        disabled: {
+          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.disabled', }),
           status: 'Error',
         },
       },
     },
     {
-      title: '上次调度时间',
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-
-        return defaultRender(item);
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', }),
+      dataIndex: 'app',
+      width: '15%',
+      valueType: 'select',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      request: async () => {
+        const rs = await loadingApps()
+        return rs;
+      },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
       },
     },
     {
-      title: '操作',
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', }),
+      dataIndex: 'appName',
+      width: '15%',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
+      dataIndex: 'module',
+      width: '15%',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      renderFormItem: (item, _a, form) => {
+        const { type, defaultRender } = _a;
+        const rest = __rest(_a, ["type", "defaultRender"]);
+        if (type === 'form') {
+          return null;
+        }
+        const pAppId = form.getFieldValue('app');
+        // form.resetFields(['function', ['ALL']]);
+        // form.setFieldsValue({function:['ALL']});
+        return (<ModuleSelect {...rest} state={{ rootId: pAppId }} />);
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
+      dataIndex: 'moduleName',
+      width: '15%',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
+      dataIndex: 'function',
+      width: '15%',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      renderFormItem: (item, _a, form) => {
+        const { type, defaultRender } = _a;
+        const rest = __rest(_a, ["type", "defaultRender"]);
+        if (type === 'form') {
+          return null;
+        }
+        const pModuleId = form.getFieldValue('module');
+        return (<FuncSelect {...rest} state={{ rootId: pModuleId }} />);
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
+      dataIndex: 'functionName',
+      width: '15%',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
+      dataIndex: 'state',
+      width: '5%',
+      initialValue: 'all',
+      hideInTable: true,
+      request: async () => {
+        const rs = await loadingTestCaseState()
+        return rs;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', }),
+      dataIndex: 'name',
+      idth: '20%',
+      hideInTable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', }),
+      dataIndex: 'description',
+      idth: '20%',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', }),
+      dataIndex: 'results',
+      idth: '20%',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          配置
-        </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          订阅警报
-        </a>,
-      ],
+      idth: '10%',
+      fixed: 'right',
+      render: (_, record) => {
+        let updateFlag = false;
+        let stateSwitch = <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.deactivate', })} onConfirm={() => deactivateCurrentRow(record.id)}>
+          <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.deactivate', })}</a>
+        </Popconfirm>
+        if (record.state === 'disabled') {
+          stateSwitch = <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.activate', })} onConfirm={() => activateCurrentRow(record.id)}>
+            <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.activate', })}</a>
+          </Popconfirm>
+          updateFlag = true;
+        }
+        return (
+          <span>
+            <a
+              key="view"
+              onClick={() => {
+                handleViewModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.view', })}
+            </a>
+            <Divider type="vertical" />
+            <a
+              key="update"
+              disabled={updateFlag}
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.update', })}
+            </a>
+            <Divider type="vertical" />
+            {stateSwitch}
+            <Divider type="vertical" />
+            <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.delete', })} onConfirm={() => delCurrentRow(record.id)}>
+              <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.delete', })}</a>
+            </Popconfirm>
+          </span>
+        );
+      },
     },
   ];
+
   return (
     <PageContainer>
-      <ProTable
-        headerTitle="查询表格"
+      <ProTable columns={columns} scroll={{ x: 1500, y: 600 }}
         actionRef={actionRef}
-        rowKey="key"
+        request={loadingData}
+        rowKey="id"
+        manualRequest={true}
+        options={{ density: false, fullScreen: true }}
         search={{
-          labelWidth: 120,
+          labelWidth: '10%', collapseRender: true,
         }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={rule}
-        columns={columns}
+        // search={false}
         rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
+          // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
+          // 注释该行则默认不显示下拉选项
+          selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
         }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
-      <ModalForm
-        title="新建规则"
-        width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value);
-
-          if (success) {
-            handleModalVisible(false);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
+        tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
+          <Space size={24}>
+            <span>
+              已选 {selectedRowKeys.length} 项
+              <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+                取消选择
+              </a>
+            </span>
+          </Space>
+        )}
+        tableAlertOptionRender={(selectedRowKeys, selectedRows, onCleanSelected) => {
+          return (
+            <BulkActions values={selectedRowKeys} onSubmit={async (value) => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }} />
+          );
         }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: '规则名称为必填项',
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
+        form={{
+          ignoreRules: false,
+        }} pagination={{
+          pageSize: 20,
+          showSizeChanger: true,
+          showQuickJumper: true,
+        }} dateFormatter="string" />
       <UpdateForm
         onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+          const success = await handleUpdateTestCases(value);
 
           if (success) {
             handleUpdateModalVisible(false);
@@ -280,6 +418,7 @@ const TableList = () => {
             }
           }
         }}
+
         onCancel={() => {
           handleUpdateModalVisible(false);
           setCurrentRow(undefined);
@@ -287,32 +426,16 @@ const TableList = () => {
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
-
-      <Drawer
-        width={600}
-        visible={showDetail}
-        onClose={() => {
+      <ViewForm
+        onCancel={() => {
+          handleViewModalVisible(false);
           setCurrentRow(undefined);
-          setShowDetail(false);
         }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns}
-          />
-        )}
-      </Drawer>
+        viewModalVisible={viewModalVisible}
+        values={currentRow || {}}
+      />
     </PageContainer>
   );
 };
 
-export default TableList;
+export default TestCasesList;

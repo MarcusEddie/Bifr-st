@@ -4,7 +4,8 @@ import React, { useState, useRef } from 'react';
 import { Button, Card, Col, Row, Select, Form, Input, message, Descriptions, Divider } from 'antd';
 import { useIntl } from 'umi';
 import styles from './style.less';
-import { getFunctions, getFunctionById, getModules, getApps, saveNewAppComponent, deleteAppComponent, saveOneCase } from '@/services/backend/api';
+import { getFunctions, getFunctionById, getModules, getApps, saveNewAppComponent, deleteAppComponent } from '@/services/backend/app';
+import { saveOneCase } from '@/services/backend/testcase';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -566,19 +567,19 @@ const SingleForm = () => {
               />
             </div>
             <Form.Item name="caseNameForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <Input id="caseName"></Input>
+              <Input id="caseName" showCount maxLength={255}></Input>
             </Form.Item >
 
             <Form.Item name="caseDesriptionForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <TextArea id="caseDesription"></TextArea>
+              <TextArea id="caseDesription" showCount maxLength={500}></TextArea>
             </Form.Item >
 
             <Form.Item name="caseStepsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <TextArea id="caseSteps"></TextArea>
+              <TextArea id="caseSteps" showCount maxLength={2000}></TextArea>
             </Form.Item >
 
             <Form.Item name="caseExpectedRsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <TextArea id="caseExpectedRs"></TextArea>
+              <TextArea id="caseExpectedRs" showCount maxLength={255}></TextArea>
             </Form.Item >
           </StepsForm.StepForm>
         </StepsForm>
