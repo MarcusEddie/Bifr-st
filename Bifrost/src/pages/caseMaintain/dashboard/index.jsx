@@ -382,9 +382,9 @@ const TestCasesList = () => {
         tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
           <Space size={24}>
             <span>
-              已选 {selectedRowKeys.length} 项
+            {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.has.select', })} {selectedRowKeys.length} {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.items', })}
               <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
-                取消选择
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.clean.all.select', })}
               </a>
             </span>
           </Space>
