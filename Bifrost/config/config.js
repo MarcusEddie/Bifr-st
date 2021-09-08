@@ -331,6 +331,25 @@ export default defineConfig({
       ],
     },
     {
+      name: 'controlPane',
+      icon: 'SettingOutlined',
+      path: '/controlPane',
+      routes: [
+        {
+          name: 'center',
+          icon: 'smile',
+          path: '/controlPane/center',
+          component: './controlPane/center',
+        },
+        {
+          name: 'settings',
+          icon: 'smile',
+          path: '/controlPane/settings',
+          component: './controlPane/settings',
+        },
+      ],
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',
