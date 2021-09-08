@@ -10,6 +10,7 @@ import { getFunctions, getModules, getApps } from '@/services/backend/app';
 import { getTestCaseState, getTestCasesByParams, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
 
 /* eslint no-underscore-dangle: 0 */
+// eslint-disable-next-line func-names
 const __rest = (this && this.__rest) || function (s, e) {
   const t = {};
   // eslint-disable-next-line no-restricted-syntax
@@ -62,6 +63,7 @@ const TestCasesList = () => {
         }
         setOptions(rs);
       })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(state)]);
     return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
   };
@@ -80,7 +82,7 @@ const TestCasesList = () => {
         }
         setOptions(rs);
       })
-
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(state)]);
     return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
   };
@@ -239,6 +241,7 @@ const TestCasesList = () => {
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       renderFormItem: (item, _a, form) => {
+        // eslint-disable-next-line no-unused-vars
         const { type, defaultRender } = _a;
         const rest = __rest(_a, ["type", "defaultRender"]);
         if (type === 'form') {
@@ -264,6 +267,7 @@ const TestCasesList = () => {
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       renderFormItem: (item, _a, form) => {
+        // eslint-disable-next-line no-unused-vars
         const { type, defaultRender } = _a;
         const rest = __rest(_a, ["type", "defaultRender"]);
         if (type === 'form') {
@@ -379,18 +383,21 @@ const TestCasesList = () => {
           // 注释该行则默认不显示下拉选项
           selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
         }}
+        // eslint-disable-next-line no-unused-vars
         tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
           <Space size={24}>
             <span>
-            {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.has.select', })} {selectedRowKeys.length} {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.items', })}
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.has.select', })} {selectedRowKeys.length} {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.items', })}
               <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
-              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.clean.all.select', })}
+                {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.clean.all.select', })}
               </a>
             </span>
           </Space>
         )}
+        // eslint-disable-next-line no-unused-vars
         tableAlertOptionRender={(selectedRowKeys, selectedRows, onCleanSelected) => {
           return (
+            // eslint-disable-next-line no-unused-vars
             <BulkActions values={selectedRowKeys} onSubmit={async (value) => {
               if (actionRef.current) {
                 actionRef.current.reload();
