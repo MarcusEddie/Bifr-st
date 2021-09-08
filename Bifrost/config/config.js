@@ -127,6 +127,210 @@ export default defineConfig({
       ],
     },
     {
+      name: 'interfaceTest',
+      icon: 'ApiOutlined',
+      path: '/interfaceTest',
+      routes: [
+        {
+          path: '/interfaceTest/create',
+          name: 'create',
+          component: './interfaceTest/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'interfaceTest/create',
+              redirect: '/interfaceTest/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/interfaceTest/create/mindMap',
+              component: './interfaceTest/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/interfaceTest/create/single',
+              component: './interfaceTest/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/interfaceTest/dashboard',
+          component: './interfaceTest/dashboard',
+        },
+      ],
+    },
+    {
+      name: 'uiTest',
+      icon: 'AppstoreAddOutlined',
+      path: '/uiTest',
+      routes: [
+        {
+          path: '/uiTest/create',
+          name: 'create',
+          component: './uiTest/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'uiTest/create',
+              redirect: '/uiTest/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/uiTest/create/mindMap',
+              component: './uiTest/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/uiTest/create/single',
+              component: './uiTest/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/uiTest/dashboard',
+          component: './uiTest/dashboard',
+        },
+      ],
+    },
+    {
+      name: 'chaosTest',
+      icon: 'AimOutlined',
+      path: '/chaosTest',
+      routes: [
+        {
+          path: '/chaosTest/create',
+          name: 'create',
+          component: './chaosTest/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'chaosTest/create',
+              redirect: '/chaosTest/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/chaosTest/create/mindMap',
+              component: './chaosTest/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/chaosTest/create/single',
+              component: './chaosTest/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/chaosTest/dashboard',
+          component: './chaosTest/dashboard',
+        },
+      ],
+    },
+    {
+      name: 'execPlan',
+      icon: 'ScheduleOutlined',
+      path: '/execPlan',
+      routes: [
+        {
+          path: '/execPlan/create',
+          name: 'create',
+          component: './execPlan/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'execPlan/create',
+              redirect: '/execPlan/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/execPlan/create/mindMap',
+              component: './execPlan/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/execPlan/create/single',
+              component: './execPlan/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/execPlan/dashboard',
+          component: './execPlan/dashboard',
+        },
+      ],
+    },
+    {
+      name: 'execHistory',
+      icon: 'HistoryOutlined',
+      path: '/execHistory',
+      routes: [
+        {
+          path: '/execHistory/create',
+          name: 'create',
+          component: './execHistory/create',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'execHistory/create',
+              redirect: '/execHistory/create/mindMap'
+            },
+            {
+              name: 'mindMap',
+              icon: 'smile',
+              path: '/execHistory/create/mindMap',
+              component: './execHistory/create/mindMap',
+            },
+            {
+              name: 'single',
+              icon: 'smile',
+              path: '/execHistory/create/single',
+              component: './execHistory/create/single',
+            },
+          ],
+        },
+        {
+          name: 'dashboard',
+          icon: 'smile',
+          path: '/execHistory/dashboard',
+          component: './execHistory/dashboard',
+        },
+      ],
+    },
+    {
+      name: 'account',
+      icon: 'user',
+      path: '/account',
+      routes: [
+        {
+          name: 'center',
+          icon: 'smile',
+          path: '/account/center',
+          component: './account/center',
+        },
+        {
+          name: 'settings',
+          icon: 'smile',
+          path: '/account/settings',
+          component: './account/settings',
+        },
+      ],
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',
@@ -268,50 +472,31 @@ export default defineConfig({
         },
       ],
     },
-    {
-      name: 'account',
-      icon: 'user',
-      path: '/account',
-      routes: [
-        {
-          name: 'center',
-          icon: 'smile',
-          path: '/account/center',
-          component: './account/center',
-        },
-        {
-          name: 'settings',
-          icon: 'smile',
-          path: '/account/settings',
-          component: './account/settings',
-        },
-      ],
-    },
-    {
-      name: 'editor',
-      icon: 'highlight',
-      path: '/editor',
-      routes: [
-        {
-          name: 'flow',
-          icon: 'smile',
-          path: '/editor/flow',
-          component: './editor/flow',
-        },
-        {
-          name: 'mind',
-          icon: 'smile',
-          path: '/editor/mind',
-          component: './editor/mind',
-        },
-        {
-          name: 'koni',
-          icon: 'smile',
-          path: '/editor/koni',
-          component: './editor/koni',
-        },
-      ],
-    },
+    // {
+    //   name: 'editor',
+    //   icon: 'highlight',
+    //   path: '/editor',
+    //   routes: [
+    //     {
+    //       name: 'flow',
+    //       icon: 'smile',
+    //       path: '/editor/flow',
+    //       component: './editor/flow',
+    //     },
+    //     {
+    //       name: 'mind',
+    //       icon: 'smile',
+    //       path: '/editor/mind',
+    //       component: './editor/mind',
+    //     },
+    //     {
+    //       name: 'koni',
+    //       icon: 'smile',
+    //       path: '/editor/koni',
+    //       component: './editor/koni',
+    //     },
+    //   ],
+    // },
     {
       path: '/',
       redirect: '/dashboard/analysis',
