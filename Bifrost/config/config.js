@@ -232,34 +232,16 @@ export default defineConfig({
       path: '/execHistory',
       routes: [
         {
-          path: '/execHistory/create',
           name: 'create',
+          path: '/execHistory/create',
           component: './execHistory/create',
           icon: 'smile',
-          routes: [
-            {
-              path: 'execHistory/create',
-              redirect: '/execHistory/create/mindMap'
-            },
-            {
-              name: 'mindMap',
-              icon: 'smile',
-              path: '/execHistory/create/mindMap',
-              component: './execHistory/create/mindMap',
-            },
-            {
-              name: 'single',
-              icon: 'smile',
-              path: '/execHistory/create/single',
-              component: './execHistory/create/single',
-            },
-          ],
         },
         {
           name: 'dashboard',
-          icon: 'smile',
           path: '/execHistory/dashboard',
           component: './execHistory/dashboard',
+          icon: 'smile',
         },
       ],
     },
