@@ -194,34 +194,16 @@ export default defineConfig({
       path: '/chaosTest',
       routes: [
         {
-          path: '/chaosTest/create',
           name: 'create',
+          path: '/chaosTest/create',
           component: './chaosTest/create',
           icon: 'smile',
-          routes: [
-            {
-              path: 'chaosTest/create',
-              redirect: '/chaosTest/create/mindMap'
-            },
-            {
-              name: 'mindMap',
-              icon: 'smile',
-              path: '/chaosTest/create/mindMap',
-              component: './chaosTest/create/mindMap',
-            },
-            {
-              name: 'single',
-              icon: 'smile',
-              path: '/chaosTest/create/single',
-              component: './chaosTest/create/single',
-            },
-          ],
         },
         {
           name: 'dashboard',
-          icon: 'smile',
           path: '/chaosTest/dashboard',
           component: './chaosTest/dashboard',
+          icon: 'smile',
         },
       ],
     },
@@ -231,34 +213,16 @@ export default defineConfig({
       path: '/execPlan',
       routes: [
         {
-          path: '/execPlan/create',
           name: 'create',
+          path: '/execPlan/create',
           component: './execPlan/create',
           icon: 'smile',
-          routes: [
-            {
-              path: 'execPlan/create',
-              redirect: '/execPlan/create/mindMap'
-            },
-            {
-              name: 'mindMap',
-              icon: 'smile',
-              path: '/execPlan/create/mindMap',
-              component: './execPlan/create/mindMap',
-            },
-            {
-              name: 'single',
-              icon: 'smile',
-              path: '/execPlan/create/single',
-              component: './execPlan/create/single',
-            },
-          ],
         },
         {
           name: 'dashboard',
-          icon: 'smile',
           path: '/execPlan/dashboard',
           component: './execPlan/dashboard',
+          icon: 'smile',
         },
       ],
     },
