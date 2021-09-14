@@ -134,32 +134,38 @@ export default defineConfig({
         {
           path: '/interfaceTest/create',
           name: 'create',
+          icon: 'smile',
           component: './interfaceTest/create',
+        },
+        {
+          path: '/interfaceTest/dashboard',
+          name: 'dashboard',
+          icon: 'smile',
+          component: './interfaceTest/dashboard',
+        },
+        {
+          path: '/interfaceTest/apis',
+          name: 'apis',
+          component: './interfaceTest/apis',
           icon: 'smile',
           routes: [
             {
-              path: 'interfaceTest/create',
-              redirect: '/interfaceTest/create/mindMap'
+              path: 'interfaceTest/apis',
+              redirect: '/caseMinterfaceTestaintain/apis/create'
             },
             {
-              name: 'mindMap',
+              name: 'create',
               icon: 'smile',
-              path: '/interfaceTest/create/mindMap',
-              component: './interfaceTest/create/mindMap',
+              path: '/interfaceTest/apis/create',
+              component: './interfaceTest/apis/create',
             },
             {
-              name: 'single',
+              name: 'dashboard',
               icon: 'smile',
-              path: '/interfaceTest/create/single',
-              component: './interfaceTest/create/single',
+              path: '/interfaceTest/apis/dashboard',
+              component: './interfaceTest/apis/dashboard',
             },
           ],
-        },
-        {
-          name: 'dashboard',
-          icon: 'smile',
-          path: '/interfaceTest/dashboard',
-          component: './interfaceTest/dashboard',
         },
       ],
     },

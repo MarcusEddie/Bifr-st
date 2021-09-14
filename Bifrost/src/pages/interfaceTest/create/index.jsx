@@ -1,80 +1,74 @@
+import React, { useState } from 'react';
+import { useIntl } from 'umi';
+import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
-// import { Input } from 'antd';
-import { history } from 'umi';
+import TestCases from './components/TestCases';
+import ExecutionDetails from './components/ExecutionDetails';
+import AddInterfaceCase from './components/AddInterfaceCase';
+import { ModalForm, StepsForm } from '@ant-design/pro-form';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Select, Form, Input, message, Descriptions, Divider } from 'antd';
 
-const tabList = [
-  {
-    key: 'mindMap',
-    // tab: (
-    //   <span>
-    //     {formatMessage({
-    //       id: 'menu.caseMaintain.create.mindMap',
-    //     })}
-    //   </span>
-    // ),
-    tab: 'MIND',
-  },
-  {
-    key: 'single',
-    // tab: (
-    //   <span>
-    //     {formatMessage({
-    //       id: 'menu.caseMaintain.create.single',
-    //     })}
-    //   </span>
-    // ),
-    tab: 'SINGLE',
-  },
-];
+const { Option } = Select;
 
-const caseMaintain = (props) => {
-  const handleTabChange = (key) => {
-    const { match } = props;
-    const url = match.url === '/' ? '' : match.url;
+const InterfaceTestCaseCreate = () => {
+  const intl = useIntl();
 
-    switch (key) {
-      case 'mindMap':
-        history.push(`${url}/mindMap`);
-        break;
+  const initTitle = `${intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })}: - `;
+  const [caseName, setCaseName] = useState(initTitle);
+  const [btnEnableSwitch, setBtnEnableSwitch] = useState(true);
+  const [createModalVisible, handleNewModalVisible] = useState(false);
+  const [rowSelected, setRowSelected] = useState(undefined);
+  const caseSelected = (row) => {
+    // window.console.log(row);
+    const titleVal = `${intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })}: ${row.name} `;
+    setCaseName(titleVal);
+    setRowSelected(row);
+    setBtnEnableSwitch(false);
+  }
 
-      case 'single':
-        history.push(`${url}/single`);
-        break;
 
-      default:
-        break;
-    }
+  const handleOpenNew = async () => {
+    handleNewModalVisible(true);
   };
 
-  const getTabKey = () => {
-    const { match, location } = props;
-    const url = match.path === '/' ? '' : match.path;
-    const tabKey = location.pathname.replace(`${url}/`, '');
-
-    if (tabKey && tabKey !== '/') {
-      return tabKey;
-    }
-
-    return 'mindMap';
-  };
+  const handleTestCaseTableOnReset = async () => {
+    setBtnEnableSwitch(true);
+    setCaseName(initTitle);
+    setRowSelected(undefined);
+  }
 
   return (
-    <PageContainer
-      content={
-        <div
-          style={{
-            textAlign: 'center',
+    <PageContainer>
+      <ProCard split="vertical">
+        <ProCard colSpan="40%" ghost>
+          <TestCases onChange={caseSelected} onReset={handleTestCaseTableOnReset} />
+        </ProCard>
+        <ProCard title={caseName} headerBordered
+          extra={
+            <Button key="primary" type="primary" size="large" disabled={btnEnableSwitch} onClick={() => { handleOpenNew(); }} >
+              <PlusOutlined />
+              {intl.formatMessage({ id: 'pages.caseMaintain.action.new', })}
+            </Button>
+          }>
+          <ExecutionDetails />
+        </ProCard>
+        <ModalForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase', })} width="1000px" preserve={false} visible={createModalVisible} onVisibleChange={handleNewModalVisible}
+          onFinish={async (value) => {
+            return false;
+          }}
+          submitter={false}
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+            },
           }}
         >
-        </div>
-      }
-      tabList={tabList}
-      tabActiveKey={getTabKey()}
-      onTabChange={handleTabChange}
-    >
-      {props.children}
+          <AddInterfaceCase rowSelected={rowSelected}></AddInterfaceCase>
+        </ModalForm>
+      </ProCard>
     </PageContainer>
   );
 };
 
-export default caseMaintain;
+export default InterfaceTestCaseCreate;

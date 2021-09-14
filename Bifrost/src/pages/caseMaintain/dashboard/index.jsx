@@ -1,12 +1,14 @@
-import { Select, message, Table, Space, Popconfirm, Divider } from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
+import { message, Table, Space, Popconfirm, Divider } from 'antd';
+import React, { useState, useRef } from 'react';
 import { useIntl } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
 import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
-import { getFunctions, getModules, getApps } from '@/services/backend/app';
+import ModuleSelect from './components/ModuleSelect';
+import FuncSelect from './components/FuncSelect';
+import { getApps } from '@/services/backend/app';
 import { getTestCaseState, getTestCasesByParams, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
 
 /* eslint no-underscore-dangle: 0 */
@@ -24,23 +26,23 @@ const __rest = (this && this.__rest) || function (s, e) {
   return t;
 };
 
-const loadingModules = async (rootId) => {
-  const rs = [];
-  const modules = await getModules(rootId);
-  if (modules && modules.data) {
-    return modules.data;
-  }
-  return rs;
-}
+// const loadingModules = async (rootId) => {
+//   const rs = [];
+//   const modules = await getModules(rootId);
+//   if (modules && modules.data) {
+//     return modules.data;
+//   }
+//   return rs;
+// }
 
-const loadingFuncs = async (rootId) => {
-  const rs = [];
-  const funcs = await getFunctions(rootId);
-  if (funcs && funcs.data) {
-    return funcs.data;
-  }
-  return rs;
-}
+// const loadingFuncs = async (rootId) => {
+//   const rs = [];
+//   const funcs = await getFunctions(rootId);
+//   if (funcs && funcs.data) {
+//     return funcs.data;
+//   }
+//   return rs;
+// }
 
 const TestCasesList = () => {
   const intl = useIntl();
@@ -49,43 +51,43 @@ const TestCasesList = () => {
   const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
 
-  const ModuleSelect = (props) => {
-    const { state } = props;
-    const [innerOptions, setOptions] = useState([]);
-    useEffect(() => {
-      const { rootId } = state || {};
-      const modules = loadingModules(rootId);
-      const rs = [];
-      rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
-      modules.then((data) => {
-        for (let i = 0; i < data.length; i += 1) {
-          rs.push({ label: data[i].name, value: data[i].id });
-        }
-        setOptions(rs);
-      })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(state)]);
-    return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
-  };
+  // const ModuleSelect = (props) => {
+  //   const { state } = props;
+  //   const [innerOptions, setOptions] = useState([]);
+  //   useEffect(() => {
+  //     const { rootId } = state || {};
+  //     const modules = loadingModules(rootId);
+  //     const rs = [];
+  //     rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
+  //     modules.then((data) => {
+  //       for (let i = 0; i < data.length; i += 1) {
+  //         rs.push({ label: data[i].name, value: data[i].id });
+  //       }
+  //       setOptions(rs);
+  //     })
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [JSON.stringify(state)]);
+  //   return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
+  // };
 
-  const FuncSelect = (props) => {
-    const { state } = props;
-    const [innerOptions, setOptions] = useState([]);
-    useEffect(() => {
-      const { rootId } = state || {};
-      const funcs = loadingFuncs(rootId);
-      const rs = [];
-      rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
-      funcs.then((data) => {
-        for (let i = 0; i < data.length; i += 1) {
-          rs.push({ label: data[i].name, value: data[i].id });
-        }
-        setOptions(rs);
-      })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(state)]);
-    return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
-  };
+  // const FuncSelect = (props) => {
+  //   const { state } = props;
+  //   const [innerOptions, setOptions] = useState([]);
+  //   useEffect(() => {
+  //     const { rootId } = state || {};
+  //     const funcs = loadingFuncs(rootId);
+  //     const rs = [];
+  //     rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
+  //     funcs.then((data) => {
+  //       for (let i = 0; i < data.length; i += 1) {
+  //         rs.push({ label: data[i].name, value: data[i].id });
+  //       }
+  //       setOptions(rs);
+  //     })
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [JSON.stringify(state)]);
+  //   return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
+  // };
 
   const loadingApps = async () => {
     const rs = [];
@@ -194,7 +196,7 @@ const TestCasesList = () => {
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
       dataIndex: 'state',
-      width: '3%',
+      width: '5%',
       hideInSearch: true,
       valueEnum: {
         enabled: {
@@ -298,20 +300,20 @@ const TestCasesList = () => {
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', }),
       dataIndex: 'name',
-      idth: '20%',
+      width: '20%',
       hideInTable: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', }),
       dataIndex: 'description',
-      idth: '20%',
+      width: '20%',
       ellipsis: true,
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', }),
       dataIndex: 'results',
-      idth: '20%',
+      width: '20%',
       ellipsis: true,
       hideInSearch: true,
     },
@@ -319,7 +321,7 @@ const TestCasesList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      idth: '10%',
+      width: '13%',
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;
@@ -375,7 +377,7 @@ const TestCasesList = () => {
         manualRequest={true}
         options={{ density: false, fullScreen: true }}
         search={{
-          labelWidth: '10%', collapseRender: true,
+          labelWidth: '10%', collapseRender: true, layout: "vertical"
         }}
         // search={false}
         rowSelection={{
