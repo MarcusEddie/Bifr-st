@@ -175,34 +175,16 @@ export default defineConfig({
       path: '/uiTest',
       routes: [
         {
-          path: '/uiTest/create',
           name: 'create',
+          path: '/uiTest/create',
           component: './uiTest/create',
           icon: 'smile',
-          routes: [
-            {
-              path: 'uiTest/create',
-              redirect: '/uiTest/create/mindMap'
-            },
-            {
-              name: 'mindMap',
-              icon: 'smile',
-              path: '/uiTest/create/mindMap',
-              component: './uiTest/create/mindMap',
-            },
-            {
-              name: 'single',
-              icon: 'smile',
-              path: '/uiTest/create/single',
-              component: './uiTest/create/single',
-            },
-          ],
         },
         {
           name: 'dashboard',
-          icon: 'smile',
           path: '/uiTest/dashboard',
           component: './uiTest/dashboard',
+          icon: 'smile',
         },
       ],
     },
