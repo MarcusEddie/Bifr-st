@@ -7,7 +7,7 @@ import { Select } from 'antd';
 const loadingModules = async (rootId) => {
   const rs = [];
   const modules = await getModules(rootId);
-  window.console.log(`loading module by app id ${rootId}`);
+  // window.console.log(`loading module by app id ${rootId}`);
   if (modules && modules.data) {
     return modules.data;
   }

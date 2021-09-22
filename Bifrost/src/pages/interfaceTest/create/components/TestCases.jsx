@@ -169,7 +169,6 @@ const TestCases = (props) => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', }),
       dataIndex: 'results',
       width: 90,
-      fixed: 'right',
       ellipsis: true,
       hideInSearch: true,
     },
@@ -179,11 +178,8 @@ const TestCases = (props) => {
       request={loadingData}
       rowKey="id"
       manualRequest={true}
-      options={false}
+      options={{ density: false, fullScreen: false, setting:true }}
       search={{ collapseRender: true, layout: "vertical" }}
-      // rowClassName={(record) => {
-      //   return record.id === ip ? styles['split-row-select-active'] : '';
-      // }}
       table-layout="fixed"
       pagination={{
         pageSize: 20,
@@ -194,9 +190,7 @@ const TestCases = (props) => {
       onRow={(record) => {
         return {
           onClick: () => {
-            // if (record.name) {
               onChange(record);
-            // }
           },
         };
       }}

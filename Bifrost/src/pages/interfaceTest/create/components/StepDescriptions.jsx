@@ -18,8 +18,8 @@ const StepDescriptions = (props) => {
   const handleSubmit = async (value) => {
     window.console.log(`Subbbbbb ${value}`);
     window.console.log(value);
-    setIsModalVisible(false);
     props.onFinish(value);
+    setIsModalVisible(false);
   }
 
   const handleCancel = async () => {

@@ -1,16 +1,17 @@
 
 import { ProFormSelect, StepsForm, ProFormTextArea } from '@ant-design/pro-form';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
-import { Button, Card, Col, Row, Select, Form, Input, message, Descriptions, Divider } from 'antd';
+import { Card, Select, Form, Input, message } from 'antd';
 import { useIntl } from 'umi';
 import styles from './style.less';
 import StepDescriptions from './StepDescriptions';
+import ResultInput from './ResultInput';
 import { getApisByAppId, getApiById } from '@/services/backend/apis';
+import {getDBConnById } from '@/services/backend/dbConn'
 import { getCasePriority, getCaseCheckMode } from '@/services/backend/generalApis';
+import { saveOneApiTestCase } from '@/services/backend/apiTest';
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 const AddInterfaceCase = (props) => {
   const { rowSelected } = props;
@@ -25,6 +26,8 @@ const AddInterfaceCase = (props) => {
   const [apiSelected, setApiSelected] = React.useState(undefined);
   const [showResultJson, setShowResultJson] = React.useState(true);
   const [showDBSerial, setShowDBSerial] = React.useState(true);
+  const [apiArguments, setApiArguments] = React.useState('N/A');
+  const [apiResponse, setApiResponse] = React.useState('N/A');
 
   const handleDropDownChange = async () => {
     const appsVal = await getApisByAppId(rowSelected.appId);
@@ -34,13 +37,138 @@ const AddInterfaceCase = (props) => {
   const handleHeader = async (values) => {
     const headers = [];
     if (values && values.header) {
+      // eslint-disable-next-line no-unused-vars
       values.header.forEach(function func(value, key) {
         const keys = Object.keys(value);
         headers.push({ headerName: keys[0], headerVal: value[keys[0]] });
       })
     }
-    // window.console.log(headers);
     setApiHeaders(headers);
+  }
+
+  const parseApiArguments = async (data) => {
+    let argumentJson = 'N/A';
+    if (data && data.arguments && data.arguments.length > 0) {
+      argumentJson = '{';
+      // eslint-disable-next-line no-unused-vars
+      data.arguments.forEach(function func(value, key) {
+        const keys = Object.keys(value);
+        let paramKV = '';
+        let typeVal = '';
+        let requireVal = '';
+        for (let i = 0; i < keys.length; i += 1) {
+          if (keys[i].toString() === 'type') {
+            typeVal = typeVal.concat('"type" : "', value[keys[i]], '"');
+          } else if (keys[i].toString() === 'required') {
+            requireVal = requireVal.concat('"required" : "', value[keys[i]], '"');
+          } else {
+            paramKV = paramKV.concat('"', keys[i], '" : "', value[keys[i]], '"')
+          }
+        }
+        argumentJson = argumentJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;{', paramKV, ', ', typeVal, ', ', requireVal, '},');
+      })
+      argumentJson = argumentJson.substring(0, argumentJson.length - 1);
+      argumentJson = argumentJson.concat('<br/>}');
+    }
+
+    setApiArguments(argumentJson);
+  }
+
+  function parseJsonArray(data, space) {
+    let itemSpace = '';
+    let blockSpace = '';
+    for (let i = 0; i < space; i += 1) {
+      itemSpace = itemSpace.concat('&nbsp;');
+      if (i < space - 3) {
+        blockSpace = blockSpace.concat('&nbsp;');
+      }
+    }
+    let dataJson = '[<br/>';
+    for (let i = 0; i < data.length; i += 1) {
+      let item = '';
+      if (Array.isArray(data[i])) {
+        item = parseJsonArray(data[i], space + 2);
+      } else if (typeof data[i] === 'object') {
+        // eslint-disable-next-line no-use-before-define
+        item = parseJsonObj(data[i], space + 2);
+      } else if (typeof data[i] === 'string') {
+        item = item.concat('"', data[i], '"');
+      }
+      if (i < data.length - 1) {
+        dataJson = dataJson.concat(itemSpace, item, ',<br/>');
+      } else {
+        dataJson = dataJson.concat(itemSpace, item, '<br/>');
+      }
+    }
+
+    dataJson = dataJson.concat(blockSpace, ']');
+
+    return dataJson;
+
+  }
+
+  function parseJsonObj(data, space) {
+    let itemSpace = '';
+    let blockSpace = '';
+    for (let i = 0; i < space; i += 1) {
+      itemSpace = itemSpace.concat('&nbsp;');
+      if (i < space - 3) {
+        blockSpace = blockSpace.concat('&nbsp;');
+      }
+    }
+    let dataJson = '{<br/>';
+    const keys = Object.keys(data);
+    let suffix = ', <br/>';
+    for (let i = 0; i < keys.length; i += 1) {
+      if (i === keys.length - 1) {
+        suffix = '<br/>';
+      }
+
+      if (Array.isArray(data[keys[i]])) {
+        dataJson = dataJson.concat(itemSpace, '"', keys[i], '": ', parseJsonArray(data[keys[i]], space + 2), suffix);
+      } else if (typeof data[keys[i]] === 'object') {
+        dataJson = dataJson.concat(itemSpace, '"', keys[i], '": ', parseJsonObj(data[keys[i]], space + 2), suffix);
+      } else if (typeof data[keys[i]] === 'string') {
+        dataJson = dataJson.concat(itemSpace, '"', keys[i], '": "', data[keys[i]], '"', suffix);
+      }
+    }
+
+    dataJson = dataJson.concat(blockSpace, '}');
+
+    return dataJson;
+  }
+
+  const parseResponseData = async (data) => {
+    let dataJson = '';
+
+    if (Array.isArray(data)) {
+      dataJson = parseJsonArray(data, 8);
+    } else if (typeof data === 'object') {
+      dataJson = parseJsonObj(data, 8);
+    }
+
+    return dataJson;
+  }
+
+
+  const parseApiResponse = async (data) => {
+    let responseJson = 'N/A';
+    if (data) {
+      responseJson = '{';
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"success" : "', data.success, '",');
+      const dataJson = await parseResponseData(data.data);
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"data" : ', dataJson, ',');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"errorCode" : "', data.errorCode, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"errorMsg" : "', data.errorMsg, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"host" : "', data.host, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"traceId" : "', data.traceId, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"timeStamp" : "', data.timeStamp, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"total" : "', data.total, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"current" : "', data.current, '",');
+      responseJson = responseJson.concat('<br/>&nbsp;&nbsp;&nbsp;&nbsp;', '"pageSize" : "', data.pageSize, '"');
+      responseJson = responseJson.concat('<br/>}');
+    }
+    setApiResponse(responseJson);
   }
 
   const handleAppChangeInNew = async (value) => {
@@ -55,6 +183,9 @@ const AddInterfaceCase = (props) => {
       setApiSelected(header);
       handleHeader(apiDetails.data.header);
       rs.push({ label: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.header', }), val: 'headerVal', id: `${apiDetails.data.id}_Header` });
+      parseApiArguments(apiDetails.data.arguments);
+      parseApiResponse(apiDetails.data.response);
+      setApiHeadersFinal([]);
     }
     if (actionRef.current) {
       actionRef.current.reload();
@@ -63,13 +194,60 @@ const AddInterfaceCase = (props) => {
   }
 
   const checkDiffInApiHeader = async (values) => {
-    window.console.log(`values`);
-    setApiHeadersFinal(values);
-    window.console.log(values);
+    const headerLengthAfterEdited = values.headers.length;
+    const headerLengthBeforeEdited = apiHeaders.length;
+    if (parseInt(headerLengthAfterEdited, 10) !== parseInt(headerLengthBeforeEdited, 10)) {
+      setApiHeadersFinal(values);
+      setApiHeaders(values.headers);
+    } else {
+      const originalHeaders = new Map();
+      for (let i = 0; i < apiHeaders.length; i += 1) {
+        originalHeaders.set(apiHeaders[i].headerName, apiHeaders[i].headerVal);
+      }
+
+      if (values && values.headers && values.headers.length > 0) {
+        for (let i = 0; i < values.headers.length; i += 1) {
+          if (originalHeaders.has(values.headers[i].headerName) && (values.headers[i].headerVal.toString() !== originalHeaders.get(values.headers[i].headerName).toString())) {
+            setApiHeadersFinal(values);
+            setApiHeaders(values.headers);
+            break;
+          } else if (!originalHeaders.has(values.headers[i].headerName)) {
+            setApiHeadersFinal(values);
+            setApiHeaders(values.headers);
+            break;
+          }
+        }
+      }
+    }
   }
 
-  const toNextStep = async () => {
-    window.console.log(apiHeadersFinal);
+  const isSelectedApiAvailable = async (apiId) => {
+    const queryRs = await getApiById(apiId);
+    if (queryRs && queryRs.data) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const isSelectedDBAvailable = async (dbConnId) => {
+    const queryRs = await getDBConnById(dbConnId);
+    if (queryRs && queryRs.data) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const toNextStep = async (values) => {
+    window.console.log(values);
+    const availableFlag = await isSelectedApiAvailable(values.apiSelected);
+    if (!availableFlag) {
+      message.error('The selected api is unavailable, check it please');
+      return false;
+    }
+
+    return true;
   }
 
   const loadingPriority = async () => {
@@ -80,6 +258,7 @@ const AddInterfaceCase = (props) => {
         prios.push({ label: priorities.data[i], value: priorities.data[i] });
       }
     }
+
     return prios;
   }
 
@@ -109,17 +288,61 @@ const AddInterfaceCase = (props) => {
     }
   }
 
+  const handleSaveNewCaseSubmit = async (values) => {
+    window.console.log(values);
+    const availableFlag = await isSelectedApiAvailable(values.apiSelected);
+    if (!availableFlag) {
+      message.error('The selected api is unavailable, check it please');
+      return false;
+    }
+
+    if(values.caseCheckMethod.toString() === "DB_DATA"){
+      const availableDBFlag = await isSelectedDBAvailable(values.caseDBConn);
+      if (!availableDBFlag) {
+        message.error('The selected db connnection is unavailable, check it please');
+        return false;
+      }
+    }
+
+    const kvs = [];
+    let obj;
+    if (apiHeadersFinal && apiHeadersFinal.headers && apiHeadersFinal.headers.length > 0) {
+      for (let i = 0; i < apiHeadersFinal.headers.length; i += 1) {
+        const key = apiHeadersFinal.headers[i].headerName;
+        const kv = Object.create(null);
+        kv[key] = apiHeadersFinal.headers[i].headerVal;
+        kvs.push(kv);
+      }
+      obj = Object.create(null);
+      obj.headers = kvs;
+    }
+
+
+    const rs = await saveOneApiTestCase(values, rowSelected.id, obj);
+    if (rs && rs.success.toString() === 'true') {
+      message.success('提交成功');
+      return true;
+    }
+    message.error('失败');
+    return false;
+  }
+
   return (
     <StepsForm current={current} onCurrentChange={setCurrent}
       onFinish={async (values) => {
-        // const success = await handleSaveNewCaseSubmit(values);
+        const success = await handleSaveNewCaseSubmit(values);
 
-        // if (success) {
-        //   message.success('提交成功');
-        //   return true;
-        // }
-        // message.error('失败');
-        // return false;
+        if (success) {
+          setApiArguments('N/A');
+          setApiResponse('N/A');
+          setShowResultJson(true);
+          setShowDBSerial(true);
+          setDescriptions([]);
+          setApiHeaders([]);
+          setApiSelected(undefined);
+          return true;
+        }
+        return false;
       }}
     >
       <StepsForm.StepForm
@@ -127,15 +350,15 @@ const AddInterfaceCase = (props) => {
         title={intl.formatMessage({ id: 'pages.interfaceTest.create.interface.selection', })}
         // initialValues={stepData}
         onFinish={async (values) => {
-          const success = await toNextStep();
-          // if (success) {
-          return true;
-          // }
-          // return false;
+          const success = await toNextStep(values);
+          if (success) {
+            return true;
+          }
+          return false;
         }}
         style={{ height: 750 }}
       >
-        <Form.Item name="apiSelected" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', })} required={true} rules={[{ required: true, message: 'Please select a app' }]}>
+        <Form.Item name="apiSelected" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', })} required={true} rules={[{ required: true, message: 'Please select a app' }]} style={{ width: '100%' }}>
           <Select id="apiSelected" showSearch style={{ width: '100%' }} placeholder="Please select a app" optionFilterProp="children" onChange={handleAppChangeInNew} onDropdownVisibleChange={handleDropDownChange}
             filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
@@ -146,6 +369,16 @@ const AddInterfaceCase = (props) => {
           </Select>
         </Form.Item >
         <StepDescriptions bordered={true} descriptions={descriptions} apiHeaders={apiHeaders} onFinish={checkDiffInApiHeader} editVal={apiSelected}></StepDescriptions>
+        <Form.Item name="apiArguments" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.arguments', })}>
+          <Card style={{ maxHeight: 190, overflowY: 'auto', }}>
+            <div dangerouslySetInnerHTML={{ __html: apiArguments }}></div>
+          </Card>
+        </Form.Item >
+        <Form.Item name="apiResponse" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.response', })}>
+          <Card style={{ maxHeight: 190, overflowY: 'auto', }}>
+            <div dangerouslySetInnerHTML={{ __html: apiResponse }}></div>
+          </Card>
+        </Form.Item >
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.steps.settup', })} style={{ height: 750 }}>
         <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
@@ -156,6 +389,9 @@ const AddInterfaceCase = (props) => {
           request={async () => {
             const ops = await loadingPriority();
             return ops;
+          }}
+          fieldProps={{
+            allowClear: false
           }}
         />
         <ProFormTextArea label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} name="caseSteps" id="caseSteps" rules={[{ required: true, message: '请输入您的所在省!', },]}
@@ -171,28 +407,14 @@ const AddInterfaceCase = (props) => {
           rules={[{ required: true, message: '请输入您的所在省!', },]}
           fieldProps={{
             onChange: (value) => { handleOnModeChange(value) },
+            allowClear: false
           }}
           request={async () => {
             const ops = await loadingCheckMethod();
             return ops;
           }}
         />
-        <Form.Item name="caseResult" hidden={showResultJson} label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-          <ProFormTextArea name="caseResult" id="caseResult" fieldProps={{ maxLength: 5000, autoSize: { minRows: 10, maxRows: 10 }, showCount: true, allowClear: true }}
-          ></ProFormTextArea>
-        </Form.Item>
-        <Form.Item name="caseDBConn" hidden={showDBSerial} label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbConnection', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-          <ProFormSelect name="caseDBConn" className={styles.item}
-            request={async () => {
-              const ops = await loadingCheckMethod();
-              return ops;
-            }}
-          />
-        </Form.Item>
-        <Form.Item name="caseDBSQL" hidden={showDBSerial} label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbSQL', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-          <ProFormTextArea name="caseDBSQL" id="caseDBSQL" fieldProps={{ maxLength: 5000, autoSize: { minRows: 10, maxRows: 10 }, showCount: true, allowClear: true }}
-          ></ProFormTextArea>
-        </Form.Item>
+        <ResultInput showResultJson={showResultJson} showDBSerial={showDBSerial} appId={rowSelected.appId}></ResultInput>
       </StepsForm.StepForm>
     </StepsForm>
   );

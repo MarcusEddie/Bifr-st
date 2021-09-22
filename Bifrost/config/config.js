@@ -167,6 +167,30 @@ export default defineConfig({
             },
           ],
         },
+        {
+          path: '/interfaceTest/dbConn',
+          name: 'dbConn',
+          component: './interfaceTest/dbConn',
+          icon: 'smile',
+          routes: [
+            {
+              path: 'interfaceTest/dbConn',
+              redirect: '/caseMinterfaceTestaintain/dbConn/create'
+            },
+            {
+              name: 'create',
+              icon: 'smile',
+              path: '/interfaceTest/dbConn/create',
+              component: './interfaceTest/dbConn/create',
+            },
+            {
+              name: 'dashboard',
+              icon: 'smile',
+              path: '/interfaceTest/dbConn/dashboard',
+              component: './interfaceTest/dbConn/dashboard',
+            },
+          ],
+        },
       ],
     },
     {
