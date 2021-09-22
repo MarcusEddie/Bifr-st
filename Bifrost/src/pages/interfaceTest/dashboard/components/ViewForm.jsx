@@ -7,13 +7,15 @@ import styles from './style.less';
 const { TextArea } = Input;
 
 const ViewForm = (props) => {
+  window.console.log(props);
+
   const intl = useIntl();
   const StepDescriptions = ({ bordered }) => {
     return (
       <Descriptions column={1} bordered={bordered}>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })}> {props.values.appName}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', })}> {props.values.moduleName}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}> {props.values.functionName}</Descriptions.Item>
+        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })}> {props.values.generalCase.appName}</Descriptions.Item>
+        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', })}> {props.values.generalCase.moduleName}</Descriptions.Item>
+        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}> {props.values.generalCase.functionName}</Descriptions.Item>
       </Descriptions>
     );
   };

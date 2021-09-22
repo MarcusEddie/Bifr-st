@@ -38,10 +38,10 @@ const ExecutionDetails = (props) => {
       fixed: 'left',
       valueEnum: {
         RESPONSE_DATA: {
-          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.response', }),
+          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.RESPONSE_DATA', }),
         },
         DB_DATA: {
-          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.db', }),
+          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.DB_DATA', }),
         },
       },
     },

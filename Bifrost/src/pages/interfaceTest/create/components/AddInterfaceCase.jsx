@@ -268,9 +268,9 @@ const AddInterfaceCase = (props) => {
     if (priorities && priorities.data) {
       for (let i = 0; i < priorities.data.length; i += 1) {
         if (priorities.data[i].toString() === 'RESPONSE_DATA') {
-          prios.push({ label: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.response', }), value: priorities.data[i] });
+          prios.push({ label: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.RESPONSE_DATA', }), value: priorities.data[i] });
         } else if (priorities.data[i].toString() === 'DB_DATA') {
-          prios.push({ label: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.db', }), value: priorities.data[i] });
+          prios.push({ label: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.DB_DATA', }), value: priorities.data[i] });
         }
       }
     }

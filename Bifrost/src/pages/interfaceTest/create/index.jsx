@@ -12,7 +12,7 @@ import { Button } from 'antd';
 const InterfaceTestCaseCreate = () => {
   const intl = useIntl();
   const actionRef = useRef();
-  const initTitle = `${intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })}: - `;
+  const initTitle = `${intl.formatMessage({ id: 'pages.interfaceTest.dashboard.generalCase.name', })}: - `;
   const [caseName, setCaseName] = useState(initTitle);
   const [generalCaseId, setGeneralCaseId] = useState(0);
   const [btnEnableSwitch, setBtnEnableSwitch] = useState(true);
@@ -21,7 +21,7 @@ const InterfaceTestCaseCreate = () => {
 
   const caseSelected = (row) => {
     // window.console.log(row);
-    const titleVal = `${intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })}: ${row.name} `;
+    const titleVal = `${intl.formatMessage({ id: 'pages.interfaceTest.dashboard.generalCase.name', })}: ${row.name} `;
     setCaseName(titleVal);
     setRowSelected(row);
     setGeneralCaseId(row.id);

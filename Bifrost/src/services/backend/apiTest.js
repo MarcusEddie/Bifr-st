@@ -23,7 +23,7 @@ export async function saveOneApiTestCase(fields, pGeneralCaseId, pHeader) {
 }
 
 export async function getApiTestCaseByGeneralCaseId(params, pGeneralCaseId) {
-  return request('/api/apiTest/getApiTestCaseByGeneralCaseId', { 
+  return request('/api/apiTest/getApiTestCasesByParams', { 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,3 +40,28 @@ export async function getApiTestCaseByGeneralCaseId(params, pGeneralCaseId) {
   });
 }
 
+export async function getApiTestCasesByParams(params, options){
+  return request('/api/apiTest/getApiTestCasesByParams', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      params:{
+        appId: params.app,
+        generalCase: {
+          moduleId: params.module,
+          functionId: params.function,
+        },
+        name: params.name,
+        state: params.state,
+        priority: params.priority,
+        resultCheckMode: params.resultCheckMode,
+      },
+      pageInfo:{
+        current: params.current,
+        pageSize: params.pageSize
+      }
+    },
+  });
+}

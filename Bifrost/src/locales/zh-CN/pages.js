@@ -117,8 +117,8 @@ export default {
   'pages.interfaceTest.create.newCase.dbSQL': '数据查询SQL',
   'pages.interfaceTest.create.case.result': '用例期望结果',
   'pages.interfaceTest.create.case.result.checkMode': '期望结果校验模式',
-  'pages.interfaceTest.create.case.result.checkMode.response': '校验接口响应',
-  'pages.interfaceTest.create.case.result.checkMode.db': '校验数据库记录',
+  'pages.interfaceTest.create.case.result.checkMode.RESPONSE_DATA': '校验接口响应',
+  'pages.interfaceTest.create.case.result.checkMode.DB_DATA': '校验数据库记录',
   'pages.interfaceTest.create.newCase.priority': '优先级',
   'pages.interfaceTest.create.newCase.api.name': '名称',
   'pages.interfaceTest.create.newCase.api.url': '地址',
@@ -130,4 +130,5 @@ export default {
   'pages.interfaceTest.create.interface.selection': '选择测试目标接口',
   'pages.interfaceTest.create.case.steps.settup': '输入测试步骤和请求参数',
   'pages.interfaceTest.create.case.rs.settup': '输入测试期望结果',
+  'pages.interfaceTest.dashboard.generalCase.name': '测试用例名称',
 };

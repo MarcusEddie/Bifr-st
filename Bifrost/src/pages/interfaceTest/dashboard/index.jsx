@@ -1,4 +1,4 @@
-import { Select, message, Table, Space, Popconfirm, Divider } from 'antd';
+import { Select, message, Table, Space, Popconfirm, Divider,Tag } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useIntl } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -7,7 +7,9 @@ import UpdateForm from './components/UpdateForm';
 import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
 import { getFunctions, getModules, getApps } from '@/services/backend/app';
-import { getTestCaseState, getTestCasesByParams, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
+import { getTestCaseState, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
+import { getCasePriority, getCaseCheckMode } from '@/services/backend/generalApis';
+import { getApiTestCasesByParams } from '@/services/backend/apiTest';
 
 /* eslint no-underscore-dangle: 0 */
 // eslint-disable-next-line func-names
@@ -48,7 +50,8 @@ const TestCasesList = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
-
+  const [priorityFlag, setPriorityFlag] = useState(undefined);
+  
   const ModuleSelect = (props) => {
     const { state } = props;
     const [innerOptions, setOptions] = useState([]);
@@ -88,6 +91,15 @@ const TestCasesList = () => {
   };
 
   const loadingApps = async () => {
+    if(!(priorityFlag && priorityFlag.length > 0)) {
+      const priority = new Map();
+      priority.set('P1', 'red');
+      priority.set('P2', 'yellow');
+      priority.set('P3', 'blue');
+      priority.set('P4', 'green');
+      setPriorityFlag(priority);
+    }
+
     const rs = [];
     const appsRs = await getApps();
     if (appsRs && appsRs.data) {
@@ -104,6 +116,33 @@ const TestCasesList = () => {
     if (states && states.data) {
       for (let i = 0; i < states.data.length; i += 1) {
         const labelId = `pages.caseMaintain.dashboard.status.${states.data[i]}`;
+        rs.push({ label: intl.formatMessage({ id: labelId, }), value: states.data[i] });
+      }
+    }
+
+    return rs;
+  }
+
+  const loadingApiTestCasePriority = async () => {
+    const rs = [];
+    const states = await getCasePriority();
+    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })});
+    if (states && states.data) {
+      for (let i = 0; i < states.data.length; i += 1) {
+        rs.push({ label: states.data[i], value: states.data[i] });
+      }
+    }
+
+    return rs;
+  }
+
+  const loadingCheckMode = async () => {
+    const rs = [];
+    const states = await getCaseCheckMode();
+    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })});
+    if (states && states.data) {
+      for (let i = 0; i < states.data.length; i += 1) {
+        const labelId = `pages.interfaceTest.create.case.result.checkMode.${states.data[i]}`;
         rs.push({ label: intl.formatMessage({ id: labelId, }), value: states.data[i] });
       }
     }
@@ -169,44 +208,23 @@ const TestCasesList = () => {
       // eslint-disable-next-line no-param-reassign
       fields.function = null;
     }
-    const data = await getTestCasesByParams(fields, options);
 
+    if (fields.priority && fields.priority.toString() === all.toString()) {
+      // eslint-disable-next-line no-param-reassign
+      fields.priority = null;
+    }
+
+    if (fields.resultCheckMode && fields.resultCheckMode.toString() === all.toString()) {
+      // eslint-disable-next-line no-param-reassign
+      fields.resultCheckMode = null;
+    }
+
+    const data = await getApiTestCasesByParams(fields, options);
+    window.console.log(data);
     return data;
   }
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      width: '5%',
-      ellipsis: false,
-      fixed: 'left',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', }),
-      dataIndex: 'name',
-      width: '17%',
-      ellipsis: true,
-      fixed: 'left',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
-      dataIndex: 'state',
-      width: '3%',
-      hideInSearch: true,
-      valueEnum: {
-        enabled: {
-          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.enabled', }),
-          status: 'Success',
-        },
-        disabled: {
-          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.disabled', }),
-          status: 'Error',
-        },
-      },
-    },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', }),
       dataIndex: 'app',
@@ -228,13 +246,6 @@ const TestCasesList = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', }),
-      dataIndex: 'appName',
-      width: '15%',
-      ellipsis: true,
-      hideInSearch: true,
-    },
-    {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
       dataIndex: 'module',
       width: '15%',
@@ -248,17 +259,8 @@ const TestCasesList = () => {
           return null;
         }
         const pAppId = form.getFieldValue('app');
-        // form.resetFields(['function', ['ALL']]);
-        // form.setFieldsValue({function:['ALL']});
         return (<ModuleSelect {...rest} state={{ rootId: pAppId }} />);
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
-      dataIndex: 'moduleName',
-      width: '15%',
-      ellipsis: true,
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
@@ -278,13 +280,6 @@ const TestCasesList = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
-      dataIndex: 'functionName',
-      width: '15%',
-      ellipsis: true,
-      hideInSearch: true,
-    },
-    {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
       dataIndex: 'state',
       width: '5%',
@@ -296,24 +291,146 @@ const TestCasesList = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', }),
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', }),
       dataIndex: 'name',
-      idth: '20%',
+      width: '20%',
       hideInTable: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', }),
-      dataIndex: 'description',
-      idth: '20%',
-      ellipsis: true,
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', }),
+      dataIndex: 'priority',
+      width: '5%',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      request: async () => {
+        const rs = await loadingApiTestCasePriority()
+        return rs;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', }),
+      dataIndex: 'resultCheckMode',
+      width: '5%',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      request: async () => {
+        const rs = await loadingCheckMode()
+        return rs;
+      },
+    },
+
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 60,
+      ellipsis: false,
+      fixed: 'left',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', }),
-      dataIndex: 'results',
-      idth: '20%',
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', }),
+      width: 200,
+      dataIndex: 'name',
+      hideInSearch: true,
+      ellipsis: true,
+      fixed: 'left',
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', }),
+      width: 60,
+      dataIndex: 'priority',
+      hideInSearch: true,
+      fixed: 'left',
+      render: (_, record) => <Tag color={priorityFlag.get(record.priority)}>{record.priority}</Tag>,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status', }),
+      dataIndex: 'state',
+      width: 60,
+      hideInSearch: true,
+      valueEnum: {
+        enabled: {
+          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.enabled', }),
+          status: 'Success',
+        },
+        disabled: {
+          text: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.status.disabled', }),
+          status: 'Error',
+        },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.dashboard.generalCase.name', }),
+      width: 200,
+      dataIndex: 'generalCaseName',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
+      dataIndex: 'moduleName',
+      width: 200,
       ellipsis: true,
       hideInSearch: true,
+      render: (_, record) => {return (record.api.moduleName)}
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
+      dataIndex: 'functionName',
+      width: 200,
+      ellipsis: true,
+      hideInSearch: true,
+      render: (_, record) => {return (record.api.functionName)}
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', }),
+      width: 200,
+      dataIndex: 'apiName',
+      hideInSearch: true,
+      ellipsis: true,
+      render: (_, record) => {return (record.api.name)}
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', }),
+      width: 200,
+      dataIndex: 'steps',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', }),
+      width: 130,
+      dataIndex: 'resultCheckMode',
+      hideInSearch: true,
+      valueEnum: {
+        RESPONSE_DATA: {
+          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.RESPONSE_DATA', }),
+        },
+        DB_DATA: {
+          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.DB_DATA', }),
+        },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', }),
+      width: 200,
+      dataIndex: 'expectedResult',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbConnection', }),
+      width: 200,
+      dataIndex: 'dbConnName',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbSQL', }),
+      width: 200,
+      dataIndex: 'querySql',
+      hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
