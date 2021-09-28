@@ -1,53 +1,59 @@
 import React from 'react';
-import { Modal, Input, Form } from 'antd';
-import { Descriptions, Divider } from 'antd';
+import { Modal, Card } from 'antd';
+import GeneralCaseInfo from './GeneralCaseInfo';
+import ApiTestCaseInfo from './ApiTestCaseInfo';
 import { useIntl } from 'umi';
-import styles from './style.less';
-
-const { TextArea } = Input;
 
 const ViewForm = (props) => {
-  window.console.log(props);
-
+  const [activeTapKey, setActiveTapKey] = React.useState('generalCaseInfo');
   const intl = useIntl();
-  const StepDescriptions = ({ bordered }) => {
-    return (
-      <Descriptions column={1} bordered={bordered}>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })}> {props.values.generalCase.appName}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', })}> {props.values.generalCase.moduleName}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}> {props.values.generalCase.functionName}</Descriptions.Item>
-      </Descriptions>
-    );
+
+  const tabListNoTitle = [
+    {
+      key: 'generalCaseInfo',
+      tab: intl.formatMessage({ id: 'pages.caseMaintain.name', }),
+    },
+    {
+      key: 'apiTestCaseInfo',
+      tab: intl.formatMessage({ id: 'pages.interfaceTest.name', }),
+    },
+  ];
+
+  const renderInfoBlockByTabKey = (tabValue) => {
+    if (tabValue === 'generalCaseInfo') {
+      return <GeneralCaseInfo values={props.generalCase || []} />;
+    }
+
+    if (tabValue === 'apiTestCaseInfo') {
+      return <ApiTestCaseInfo values={props.values || {}} />;
+    }
+
+    return null;
   };
+
   return (
     <Modal
-      title="新建规则"
-      width="600px"
+      title={`${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.view', })}${intl.formatMessage({ id: 'pages.interfaceTest.dashboard.action.viewDetails', })}`}
+      width="700px"
       visible={props.viewModalVisible}
-      onCancel={props.onCancel}
+      onCancel={() => {
+        setActiveTapKey('generalCaseInfo');
+        props.onCancel();
+      }}
       destroyOnClose={true}
       footer={null}
     >
-      <div className={styles.result}>
-        <StepDescriptions bordered />
-        <Divider
-          style={{
-            margin: '24px 0',
-          }}
-        />
-      </div>
-      <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} >
-        <Input id="caseName" name="caseName" defaultValue={props.values.name} disabled={true} bordered={false}></Input>
-      </Form.Item>
-      <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', })} >
-        <TextArea id="caseDesription" name="caseDesription" defaultValue={props.values.description} disabled={true} bordered={false} autoSize={true}></TextArea>
-      </Form.Item>
-      <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} >
-        <TextArea id="caseSteps" name="caseSteps" defaultValue={props.values.steps} disabled={true} bordered={false} autoSize={true}></TextArea>
-      </Form.Item>
-      <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', })} >
-        <TextArea id="caseExpectedRs" name="caseExpectedRs" defaultValue={props.values.results} disabled={true} bordered={false} autoSize={true}></TextArea>
-      </Form.Item>
+      <Card
+        style={{ width: '100%', height: 800 }}
+        tabList={tabListNoTitle}
+        bordered={false}
+        activeTabKey={activeTapKey}
+        onTabChange={(key) => {
+          setActiveTapKey(key);
+        }}
+      >
+        {renderInfoBlockByTabKey(activeTapKey)}
+      </Card>
     </Modal>
   );
 };

@@ -64,6 +64,7 @@ export async function getTestCasesByParams(params, options){
     },
     data: {
       params:{
+        id: params.id,
         appId: params.app,
         moduleId: params.module,
         functionId: params.function,

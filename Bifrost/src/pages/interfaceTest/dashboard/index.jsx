@@ -1,4 +1,4 @@
-import { Select, message, Table, Space, Popconfirm, Divider,Tag } from 'antd';
+import { Select, message, Table, Space, Popconfirm, Divider, Tag } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useIntl } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -7,9 +7,9 @@ import UpdateForm from './components/UpdateForm';
 import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
 import { getFunctions, getModules, getApps } from '@/services/backend/app';
-import { getTestCaseState, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
+import { getTestCaseState, getTestCasesByParams } from '@/services/backend/testcase';
 import { getCasePriority, getCaseCheckMode } from '@/services/backend/generalApis';
-import { getApiTestCasesByParams } from '@/services/backend/apiTest';
+import { getApiTestCasesByParams, delApiTestCaseById, deactivateApiTestCaseById, activateApiTestCaseById } from '@/services/backend/apiTest';
 
 /* eslint no-underscore-dangle: 0 */
 // eslint-disable-next-line func-names
@@ -50,8 +50,10 @@ const TestCasesList = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
+  const [showResultJson, setShowResultJson] = useState(true);
+  const [selectedGeneralCase, setSelectedGeneralCase] = useState();
   const [priorityFlag, setPriorityFlag] = useState(undefined);
-  
+
   const ModuleSelect = (props) => {
     const { state } = props;
     const [innerOptions, setOptions] = useState([]);
@@ -91,7 +93,7 @@ const TestCasesList = () => {
   };
 
   const loadingApps = async () => {
-    if(!(priorityFlag && priorityFlag.length > 0)) {
+    if (!(priorityFlag && priorityFlag.length > 0)) {
       const priority = new Map();
       priority.set('P1', 'red');
       priority.set('P2', 'yellow');
@@ -126,7 +128,7 @@ const TestCasesList = () => {
   const loadingApiTestCasePriority = async () => {
     const rs = [];
     const states = await getCasePriority();
-    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })});
+    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
     if (states && states.data) {
       for (let i = 0; i < states.data.length; i += 1) {
         rs.push({ label: states.data[i], value: states.data[i] });
@@ -139,7 +141,7 @@ const TestCasesList = () => {
   const loadingCheckMode = async () => {
     const rs = [];
     const states = await getCaseCheckMode();
-    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })});
+    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
     if (states && states.data) {
       for (let i = 0; i < states.data.length; i += 1) {
         const labelId = `pages.interfaceTest.create.case.result.checkMode.${states.data[i]}`;
@@ -150,17 +152,8 @@ const TestCasesList = () => {
     return rs;
   }
 
-  const handleUpdateTestCases = async (fields) => {
-    const success = await updateTestCase(fields, currentRow.id);
-    if (success) {
-      return true;
-    }
-    message.error('更新失败请重试！');
-    return false;
-  };
-
   const deactivateCurrentRow = async (value) => {
-    const success = await deactivateTestCaseById(value);
+    const success = await deactivateApiTestCaseById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -171,7 +164,7 @@ const TestCasesList = () => {
   }
 
   const activateCurrentRow = async (value) => {
-    const success = await activateTestCaseById(value);
+    const success = await activateApiTestCaseById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -182,7 +175,7 @@ const TestCasesList = () => {
   }
 
   const delCurrentRow = async (value) => {
-    const success = await delTestCaseById(value);
+    const success = await delApiTestCaseById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -220,8 +213,30 @@ const TestCasesList = () => {
     }
 
     const data = await getApiTestCasesByParams(fields, options);
-    window.console.log(data);
     return data;
+  }
+
+  const handleBtnClick = async (key, record) => {
+    if (key.toString() === 'view') {
+      handleViewModalVisible(true);
+    } else if (key.toString() === 'update') {
+      handleUpdateModalVisible(true);
+    }
+
+    setCurrentRow(record);
+
+    if (record.resultCheckMode.toString() === 'RESPONSE_DATA') {
+      setShowResultJson(true);
+    } else {
+      setShowResultJson(false);
+    }
+
+    const field = Object.create(null);
+    field.id = record.generalCaseId;
+    const data = await getTestCasesByParams(field);
+    if (data && data.data) {
+      setSelectedGeneralCase(data.data);
+    }
   }
 
   const columns = [
@@ -233,7 +248,7 @@ const TestCasesList = () => {
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       request: async () => {
-        const rs = await loadingApps()
+        const rs = await loadingApps();
         return rs;
       },
       formItemProps: {
@@ -286,7 +301,7 @@ const TestCasesList = () => {
       initialValue: 'all',
       hideInTable: true,
       request: async () => {
-        const rs = await loadingTestCaseState()
+        const rs = await loadingTestCaseState();
         return rs;
       },
     },
@@ -303,7 +318,7 @@ const TestCasesList = () => {
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       request: async () => {
-        const rs = await loadingApiTestCasePriority()
+        const rs = await loadingApiTestCasePriority();
         return rs;
       },
     },
@@ -314,7 +329,7 @@ const TestCasesList = () => {
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       request: async () => {
-        const rs = await loadingCheckMode()
+        const rs = await loadingCheckMode();
         return rs;
       },
     },
@@ -372,7 +387,7 @@ const TestCasesList = () => {
       width: 200,
       ellipsis: true,
       hideInSearch: true,
-      render: (_, record) => {return (record.api.moduleName)}
+      render: (_, record) => { return (record.api.moduleName) }
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
@@ -380,7 +395,7 @@ const TestCasesList = () => {
       width: 200,
       ellipsis: true,
       hideInSearch: true,
-      render: (_, record) => {return (record.api.functionName)}
+      render: (_, record) => { return (record.api.functionName) }
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', }),
@@ -388,7 +403,7 @@ const TestCasesList = () => {
       dataIndex: 'apiName',
       hideInSearch: true,
       ellipsis: true,
-      render: (_, record) => {return (record.api.name)}
+      render: (_, record) => { return (record.api.name) }
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', }),
@@ -451,24 +466,11 @@ const TestCasesList = () => {
         }
         return (
           <span>
-            <a
-              key="view"
-              onClick={() => {
-                handleViewModalVisible(true);
-                setCurrentRow(record);
-              }}
-            >
+            <a key="view" onClick={async () => { await handleBtnClick("view", record) }} >
               {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.view', })}
             </a>
             <Divider type="vertical" />
-            <a
-              key="update"
-              disabled={updateFlag}
-              onClick={() => {
-                handleUpdateModalVisible(true);
-                setCurrentRow(record);
-              }}
-            >
+            <a key="update" disabled={updateFlag} onClick={async () => { await handleBtnClick("update", record) }}>
               {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.update', })}
             </a>
             <Divider type="vertical" />
@@ -491,10 +493,9 @@ const TestCasesList = () => {
         rowKey="id"
         manualRequest={true}
         options={{ density: false, fullScreen: true }}
-        search={{
-          labelWidth: '10%', collapseRender: true,
-        }}
-        // search={false}
+        search={{ labelWidth: '10%', collapseRender: true, }}
+        form={{ ignoreRules: false, }} dateFormatter="string"
+        pagination={{ pageSize: 20, showSizeChanger: true, showQuickJumper: true, }}
         rowSelection={{
           // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
           // 注释该行则默认不显示下拉选项
@@ -522,24 +523,15 @@ const TestCasesList = () => {
             }} />
           );
         }}
-        form={{
-          ignoreRules: false,
-        }} pagination={{
-          pageSize: 20,
-          showSizeChanger: true,
-          showQuickJumper: true,
-        }} dateFormatter="string" />
+      />
       <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdateTestCases(value);
+        onSubmit={async () => {
+          window.console.log("handle succ");
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
 
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+          if (actionRef.current) {
+            actionRef.current.reload();
           }
         }}
 
@@ -549,6 +541,7 @@ const TestCasesList = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+        showResult={showResultJson}
       />
       <ViewForm
         onCancel={() => {
@@ -557,6 +550,7 @@ const TestCasesList = () => {
         }}
         viewModalVisible={viewModalVisible}
         values={currentRow || {}}
+        generalCase={selectedGeneralCase}
       />
     </PageContainer>
   );

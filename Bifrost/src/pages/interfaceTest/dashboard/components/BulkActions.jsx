@@ -1,7 +1,7 @@
 import { message, Space, Popconfirm } from 'antd';
 import React from 'react';
 import { useIntl } from 'umi';
-import { delTestCaseByIds, deactivateTestCaseByIds, activateTestCaseByIds } from '@/services/backend/testcase';
+import { delApiTestCaseByIds, deactivateApiTestCaseByIds, activateApiTestCaseByIds } from '@/services/backend/apiTest';
 
 const BulkActions = (props) => {
 
@@ -23,7 +23,7 @@ const BulkActions = (props) => {
     
     const keys = props.values.selectedRowKeys;
     const ids = keys.join(',');
-    const success = await deactivateTestCaseByIds(ids);
+    const success = await deactivateApiTestCaseByIds(ids);
     if (success) {
       const msg = `${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.bulk', })}${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.deactivate', })}${intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.result.success', })}`;
       message.success(msg);
@@ -52,7 +52,7 @@ const BulkActions = (props) => {
 
     const keys = props.values.selectedRowKeys;
     const ids = keys.join(',');
-    const success = await activateTestCaseByIds(ids);
+    const success = await activateApiTestCaseByIds(ids);
     if (success) {
       const msg = `${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.bulk', })}${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.deactivate', })}${intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.result.success', })}`;
       message.success(msg);
@@ -68,7 +68,7 @@ const BulkActions = (props) => {
   const bulkDelete = async () => {
     const keys = props.values.selectedRowKeys;
     const ids = keys.join(',');
-    const success = await delTestCaseByIds(ids);
+    const success = await delApiTestCaseByIds(ids);
     if (success) {
       const msg = `${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.bulk', })}${intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.delete', })}${intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.result.success', })}`;
       message.success(msg);
