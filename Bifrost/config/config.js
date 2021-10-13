@@ -146,26 +146,8 @@ export default defineConfig({
         {
           path: '/interfaceTest/apis',
           name: 'apis',
-          component: './interfaceTest/apis',
           icon: 'smile',
-          routes: [
-            {
-              path: 'interfaceTest/apis',
-              redirect: '/caseMinterfaceTestaintain/apis/create'
-            },
-            {
-              name: 'create',
-              icon: 'smile',
-              path: '/interfaceTest/apis/create',
-              component: './interfaceTest/apis/create',
-            },
-            {
-              name: 'dashboard',
-              icon: 'smile',
-              path: '/interfaceTest/apis/dashboard',
-              component: './interfaceTest/apis/dashboard',
-            },
-          ],
+          component: './interfaceTest/apis',
         },
         {
           path: '/interfaceTest/dbConn',

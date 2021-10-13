@@ -526,7 +526,6 @@ const TestCasesList = () => {
       />
       <UpdateForm
         onSubmit={async () => {
-          window.console.log("handle succ");
           handleUpdateModalVisible(false);
           setCurrentRow(undefined);
 

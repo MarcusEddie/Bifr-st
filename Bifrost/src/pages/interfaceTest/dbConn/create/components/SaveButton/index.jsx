@@ -139,7 +139,6 @@ class Save extends React.Component {
 
     const dfs = async (data, cnt, map, leaf) => {
       let ct = cnt;
-      window.console.log(`${data.label} - ${ct}`);
 
       if (!(data.children && data.children.length !== 0)) {
         if (map.has(data.id)) {

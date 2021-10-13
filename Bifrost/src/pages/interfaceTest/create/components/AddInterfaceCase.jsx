@@ -240,7 +240,6 @@ const AddInterfaceCase = (props) => {
   }
 
   const toNextStep = async (values) => {
-    window.console.log(values);
     const availableFlag = await isSelectedApiAvailable(values.apiSelected);
     if (!availableFlag) {
       message.error('The selected api is unavailable, check it please');
@@ -289,7 +288,6 @@ const AddInterfaceCase = (props) => {
   }
 
   const handleSaveNewCaseSubmit = async (values) => {
-    window.console.log(values);
     const availableFlag = await isSelectedApiAvailable(values.apiSelected);
     if (!availableFlag) {
       message.error('The selected api is unavailable, check it please');

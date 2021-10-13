@@ -22,20 +22,18 @@ const ResultInput = (props) => {
   if (!showResultJson) {
     // loadingDBConn();
     component = <><Form.Item name="caseDBConn" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbConnection', })} rules={[{ required: true, message: 'Please select your function!' }]}>
-      <Select id="apiSelected" showSearch style={{ width: '100%' }} placeholder="Please select a app" optionFilterProp="children" onDropdownVisibleChange={loadingDBConn} 
-      // defaultValue={props.values.dbConnId}
-      defaultValue={dbConnNameVal}
-      // value={props.values.dbConnId}
+      <Select id="apiSelected" showSearch style={{ width: '100%' }} placeholder="Please select a app" optionFilterProp="children" onDropdownVisibleChange={loadingDBConn}
+        // defaultValue={props.values.dbConnId}
+        defaultValue={dbConnNameVal}
+        // value={props.values.dbConnId}
         filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
       >
         {dbConns && dbConns.map((dbConn) => {
           if (dbConn.id === props.values.dbConnId) {
-            window.console.log('ResultInput matched', props.values.dbConnId, dbConn.id)
             return <Option key={dbConn.id} label={dbConn.id} selected="selected">{dbConn.name}</Option>;
           }
-          window.console.log('ResultInput', props.values.dbConnId, dbConn.id)
-            return <Option key={dbConn.id} label={dbConn.id}> {dbConn.name}</Option> ;
+          return <Option key={dbConn.id} label={dbConn.id}> {dbConn.name}</Option>;
         }
         )}
       </Select>

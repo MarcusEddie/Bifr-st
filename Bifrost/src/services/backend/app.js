@@ -28,6 +28,17 @@ export async function getModules(pAppId) {
   });
 }
 
+export async function getModuleById(pModuleId) {
+  return request('/api/app/getModuleById', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      id: pModuleId
+    },
+  });
+}
 export async function getFunctions(pModuleId) {
   return request('/api/app/getFuncOptions', {
     method: 'POST',
