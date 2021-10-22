@@ -21,9 +21,11 @@ const UpdateDBConnDetails = (props) => {
   const { data } = props;
   const urlRootMySql = 'jdbc:mysql://';
   const urlRootHANA = 'jdbc:sap://';
+  // eslint-disable-next-line no-unused-vars
   const [apps, setApps] = React.useState([]);
   const [dbTypes, setDbTypes] = React.useState([]);
   const [components, setComponents] = useState(undefined);
+  // eslint-disable-next-line no-unused-vars
   const [dbTypeOriginal, setDbTypeOriginal] = React.useState(data.dbType);
   // eslint-disable-next-line no-unused-vars
   const [connectionParams, setConnectionParams] = React.useState([]);

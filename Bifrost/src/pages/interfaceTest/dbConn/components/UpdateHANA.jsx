@@ -110,7 +110,7 @@ const UpdateHANA = (props) => {
             </Form.Item >
           </Col>
           <Col span={6}>
-            <Form.Item name="instanceNumber" label={intl.formatMessage({ id: 'pages.interfaceTest.db.hana', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={defaultPort}>
+            <Form.Item name="instanceNumber" label={intl.formatMessage({ id: 'pages.interfaceTest.db.hana', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={data.instanceNumber}>
               <Input id="instanceNumber" maxLength={255} onChange={(e) => { generateConnectionURL(e, 'instanceNumber') }}></Input>
             </Form.Item >
           </Col>
