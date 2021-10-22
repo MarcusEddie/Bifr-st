@@ -53,9 +53,9 @@ const AddOneDBConn = () => {
     setDbType(value);// fill the selected value to the ui
     let dbPanel;
     if (value === 'MySQL') {
-      dbPanel = <MySQL syncData={setConnectionParams} onRef={setFormItems}></MySQL>
+      dbPanel = <MySQL syncData={setConnectionParams} dbType={value} onRef={setFormItems}></MySQL>
     } else if (value === 'HANA') {
-      dbPanel = <HANA syncData={setConnectionParams} onRef={setFormItems}></HANA>
+      dbPanel = <HANA syncData={setConnectionParams} dbType={value} onRef={setFormItems}></HANA>
     }
 
     setComponents(dbPanel);

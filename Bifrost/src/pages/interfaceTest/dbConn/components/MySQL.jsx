@@ -17,7 +17,7 @@ const MySQL = (props) => {
   props.onRef(form);
 
   const dbConnTest = async () => {
-    const success = await dbConnectionTest(form.getFieldValue('URL'), form.getFieldValue('userName'), form.getFieldValue('password'));
+    const success = await dbConnectionTest(form.getFieldValue('URL'), form.getFieldValue('userName'), form.getFieldValue('password'), props.dbType);
     if (isNotBlank(success.errorMsg)) {
       message.error(success.errorMsg);
     } else {

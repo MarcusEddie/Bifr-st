@@ -5,6 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useIntl } from 'umi';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { dbConnectionTest } from '@/services/backend/dbConn'
+import { isNotBlank } from '@/utils/StringUtils';
 
 const HANA = (props) => {
   const intl = useIntl();
@@ -14,11 +15,11 @@ const HANA = (props) => {
   props.onRef(form);
 
   const dbConnTest = async () => {
-    const success = await dbConnectionTest(form.getFieldValue('URL'), form.getFieldValue('userName'), form.getFieldValue('password'));
-    if (success) {
-      message.success("Test successfully");
+    const success = await dbConnectionTest(form.getFieldValue('URL'), form.getFieldValue('userName'), form.getFieldValue('password'), props.dbType);
+    if (isNotBlank(success.errorMsg)) {
+      message.error(success.errorMsg);
     } else {
-      message.error("Can't establish a connection to the target database");
+      message.success("Test successfully");
     }
   }
 

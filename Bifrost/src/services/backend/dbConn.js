@@ -157,7 +157,7 @@ export async function deactivateDBConnByIds(pIds) {
   });
 }
 
-export async function dbConnectionTest(pURL, pUserName, pPw) {
+export async function dbConnectionTest(pURL, pUserName, pPw, pDBType) {
   return request('/api/dbConn/dbConnectionTest', {
     method: 'POST',
     headers: {
@@ -166,6 +166,7 @@ export async function dbConnectionTest(pURL, pUserName, pPw) {
     data: {
       url: pURL,
       userName: pUserName,
+      dbType: pDBType,
       password: pPw
     },
   });

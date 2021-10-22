@@ -68,7 +68,7 @@ const UpdateDBConnDetails = (props) => {
           obj.port = 3306;
           obj.db = '';
         }
-        dbPanel = <UpdateMySQL data={obj} syncData={setConnectionParams} onRef={setFormItems}></UpdateMySQL>
+        dbPanel = <UpdateMySQL data={obj} syncData={setConnectionParams} dbType={value}  onRef={setFormItems}></UpdateMySQL>
       } else if (value === 'HANA') {
         if (isNotBlank(fullUri)) {
           const spliterRight = fullUri.lastIndexOf(":");
@@ -80,15 +80,15 @@ const UpdateDBConnDetails = (props) => {
           obj.url = urlRootHANA;
           obj.port = 30015;
         }
-        dbPanel = <UpdateHANA data={obj} syncData={setConnectionParams} onRef={setFormItems}></UpdateHANA>
+        dbPanel = <UpdateHANA data={obj} syncData={setConnectionParams} dbType={value}  onRef={setFormItems}></UpdateHANA>
       }
       setComponents(dbPanel);
     } else {
       setDbTypeChanged(true);
       if (value === 'MySQL') {
-        dbPanel = <MySQL syncData={setConnectionParams} onRef={setFormItems}></MySQL>
+        dbPanel = <MySQL syncData={setConnectionParams} dbType={value} onRef={setFormItems}></MySQL>
       } else if (value === 'HANA') {
-        dbPanel = <HANA syncData={setConnectionParams} onRef={setFormItems}></HANA>
+        dbPanel = <HANA syncData={setConnectionParams} dbType={value} onRef={setFormItems}></HANA>
       }
       setComponents(dbPanel);
     }
