@@ -125,6 +125,7 @@ export default {
   'pages.interfaceTest.create.newCase.priority': '优先级',
   'pages.interfaceTest.create.newCase.api.name': '名称',
   'pages.interfaceTest.create.newCase.api.url': '地址',
+  'pages.interfaceTest.create.newCase.api.port': '端口',
   'pages.interfaceTest.create.newCase.api.path': '路径',
   'pages.interfaceTest.create.newCase.api.method': '方法',
   'pages.interfaceTest.create.newCase.api.header': '头部信息',
@@ -146,5 +147,14 @@ export default {
   'pages.interfaceTest.apis.app.defination.interaction.format.setup': '输入接口参数/返回',
   'pages.interfaceTest.apis.app.defination.interaction.format': '接口参数/返回',
   'pages.interfaceTest.apis.connection.test': '测试连接',
+  'pages.interfaceTest.db.app.selection': '选择应用/数据库',
+  'pages.interfaceTest.db.connection.username': '用户名',
+  'pages.interfaceTest.db.connection.password': '密码',
+  'pages.interfaceTest.db.connection.details.setup': '输入数据库连接详情',
+  'pages.interfaceTest.db.type': '数据库类型',
+  'pages.interfaceTest.db': '数据库',
+  'pages.interfaceTest.db.hana': 'Instance No.',
+  'pages.interfaceTest.db.connection': '数据库连接',
   'pages.caseMaintain.dashboard.actions.edit': '编辑',
 };
+

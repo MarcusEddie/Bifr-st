@@ -11,3 +11,7 @@ export async function getCasePriority(){
 export async function getCaseCheckMode(){
   return request('/api/generalApis/getCaseCheckMode');
 }
+
+export async function getDBType(){
+  return request('/api/generalApis/getDBType');
+}

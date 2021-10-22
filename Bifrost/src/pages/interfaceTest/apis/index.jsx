@@ -53,7 +53,6 @@ const ApisList = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
-  const [priorityFlag, setPriorityFlag] = useState(undefined);
   const [createModalVisible, handleNewModalVisible] = useState(false);
 
   const ModuleSelect = (props) => {
@@ -95,15 +94,6 @@ const ApisList = () => {
   };
 
   const loadingApps = async () => {
-    if (!(priorityFlag && priorityFlag.length > 0)) {
-      const priority = new Map();
-      priority.set('P1', 'red');
-      priority.set('P2', 'yellow');
-      priority.set('P3', 'blue');
-      priority.set('P4', 'green');
-      setPriorityFlag(priority);
-    }
-
     const rs = [];
     const appsRs = await getApps();
     if (appsRs && appsRs.data) {
@@ -210,19 +200,6 @@ const ApisList = () => {
     }
 
     setCurrentRow(record);
-
-    // if (record.resultCheckMode.toString() === 'RESPONSE_DATA') {
-    //   setShowResultJson(true);
-    // } else {
-    //   setShowResultJson(false);
-    // }
-
-    // const field = Object.create(null);
-    // field.id = record.generalCaseId;
-    // const data = await getTestCasesByParams(field);
-    // if (data && data.data) {
-    //   setSelectedGeneralCase(data.data);
-    // }
   }
 
   const columns = [
