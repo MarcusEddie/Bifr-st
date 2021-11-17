@@ -6,14 +6,12 @@ import { useIntl } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
-import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
 import HistForm from './components/HistForm';
-import AddOneApi from './components/AddOneApi';
+import AddOnePage from './components/AddOnePage';
 import { getFunctions, getModules, getApps } from '@/services/backend/app';
 import { getTestCaseState } from '@/services/backend/testcase';
-import { getHttpMethods } from '@/services/backend/generalApis';
-import { getApisByParams, deleteApiById, activateApiById, deactivateApiById } from '@/services/backend/apis'
+import { getPagesByParams, deletePageById, activatePageById, deactivatePageById } from '@/services/backend/page'
 
 /* eslint no-underscore-dangle: 0 */
 // eslint-disable-next-line func-names
@@ -48,13 +46,12 @@ const loadingFuncs = async (rootId) => {
   return rs;
 }
 
-const ApisList = () => {
+const UiPagesList = () => {
   const intl = useIntl();
   const actionRef = useRef();
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [viewModalVisible, handleViewModalVisible] = useState(false);
-  const [histModelVisible, handleHistModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
+  const [histModelVisible, handleHistModalVisible] = useState(false);
   const [createModalVisible, handleNewModalVisible] = useState(false);
 
   const ModuleSelect = (props) => {
@@ -119,21 +116,8 @@ const ApisList = () => {
     return rs;
   }
 
-  const loadingApiMethod = async () => {
-    const rs = [];
-    const states = await getHttpMethods();
-    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
-    if (states && states.data) {
-      for (let i = 0; i < states.data.length; i += 1) {
-        rs.push({ label: states.data[i], value: states.data[i] });
-      }
-    }
-
-    return rs;
-  }
-
   const deactivateCurrentRow = async (value) => {
-    const success = await deactivateApiById(value);
+    const success = await deactivatePageById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -144,7 +128,7 @@ const ApisList = () => {
   }
 
   const activateCurrentRow = async (value) => {
-    const success = await activateApiById(value);
+    const success = await activatePageById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -155,7 +139,7 @@ const ApisList = () => {
   }
 
   const delCurrentRow = async (value) => {
-    const success = await deleteApiById(value);
+    const success = await deletePageById(value);
     if (success) {
       if (actionRef.current) {
         actionRef.current.reload();
@@ -185,19 +169,12 @@ const ApisList = () => {
       fields.function = null;
     }
 
-    if (fields.method && fields.method.toString() === all.toString()) {
-      // eslint-disable-next-line no-param-reassign
-      fields.method = null;
-    }
-
-    const data = await getApisByParams(fields, options);
+    const data = await getPagesByParams(fields, options);
     return data;
   }
 
   const handleBtnClick = async (key, record) => {
-    if (key.toString() === 'view') {
-      handleViewModalVisible(true);
-    } else if (key.toString() === 'update') {
+    if (key.toString() === 'update') {
       handleUpdateModalVisible(true);
     } else if (key.toString() === 'hist') {
       handleHistModalVisible(true)
@@ -273,23 +250,11 @@ const ApisList = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.path', }),
-      dataIndex: 'path',
+      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', }),
+      dataIndex: 'name',
       width: '20%',
       hideInTable: true,
     },
-    {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.method', }),
-      dataIndex: 'method',
-      width: '5%',
-      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
-      hideInTable: true,
-      request: async () => {
-        const rs = await loadingApiMethod();
-        return rs;
-      },
-    },
-
     {
       title: 'ID',
       dataIndex: 'id',
@@ -300,31 +265,15 @@ const ApisList = () => {
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', }),
-      width: 200,
+      width: 300,
       dataIndex: 'name',
       hideInSearch: true,
       ellipsis: true,
       fixed: 'left',
     },
     {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.path', }),
-      width: 200,
-      dataIndex: 'path',
-      hideInSearch: true,
-      ellipsis: true,
-      fixed: 'left',
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.method', }),
-      width: 200,
-      dataIndex: 'method',
-      hideInSearch: true,
-      ellipsis: true,
-      fixed: 'left',
-    },
-    {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', }),
-      width: 200,
+      width: 400,
       dataIndex: 'url',
       hideInSearch: true,
       ellipsis: true,
@@ -385,10 +334,6 @@ const ApisList = () => {
         }
         return (
           <span>
-            <a key="view" onClick={async () => { await handleBtnClick("view", record) }} >
-              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.view', })}
-            </a>
-            <Divider type="vertical" />
             <a key="update" disabled={updateFlag} onClick={async () => { await handleBtnClick("update", record) }}>
               {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.update', })}
             </a>
@@ -456,7 +401,7 @@ const ApisList = () => {
           );
         }}
       />
-      <ModalForm title={intl.formatMessage({ id: 'pages.interfaceTest.apis.action.new', })} width="1000px" preserve={false} visible={createModalVisible} onVisibleChange={handleNewModalVisible}
+      <ModalForm title={intl.formatMessage({ id: 'pages.uiTest.pages.action.new', })} width="1000px" preserve={false} visible={createModalVisible} onVisibleChange={handleNewModalVisible}
         onFinish={async () => {
           return false;
         }}
@@ -470,7 +415,7 @@ const ApisList = () => {
           },
         }}
       >
-        <AddOneApi ></AddOneApi>
+        <AddOnePage ></AddOnePage>
       </ModalForm>
       <UpdateForm
         onSubmit={async () => {
@@ -489,14 +434,6 @@ const ApisList = () => {
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
-      <ViewForm
-        onCancel={() => {
-          handleViewModalVisible(false);
-          setCurrentRow(undefined);
-        }}
-        viewModalVisible={viewModalVisible}
-        values={currentRow || {}}
-      />
       <HistForm
         onCancel={() => {
           handleHistModalVisible(false);
@@ -504,10 +441,10 @@ const ApisList = () => {
         }}
         histModalVisible={histModelVisible}
         values={currentRow || {}}
-        funcTag={'apiDeclaration'}
+        funcTag={'pageDeclaration'}
       />
     </PageContainer>
   );
 };
 
-export default ApisList;
+export default UiPagesList;

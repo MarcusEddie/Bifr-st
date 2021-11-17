@@ -11,6 +11,7 @@ import { getTestCaseState } from '@/services/backend/testcase';
 import BulkActions from './components/BulkActions';
 import AddOneDBConn from './components/AddOneDBConn';
 import UpdateDBConnDetails from './components/UpdateDBConnDetails';
+import HistForm from './components/HistForm';
 import { getDBType } from '@/services/backend/generalApis';
 
 const DbConnList = () => {
@@ -20,6 +21,7 @@ const DbConnList = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
   const [createModalVisible, handleNewModalVisible] = useState(false);
+  const [histModelVisible, handleHistModalVisible] = useState(false);
 
   const loadingTestCaseState = async () => {
     const rs = [];
@@ -96,7 +98,10 @@ const DbConnList = () => {
   const handleBtnClick = async (key, record) => {
     if (key.toString() === 'update') {
       handleUpdateModalVisible(true);
+    } else if (key.toString() === 'hist') {
+      handleHistModalVisible(true)
     }
+
 
     setCurrentRow(record);
   }
@@ -254,6 +259,10 @@ const DbConnList = () => {
             <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.delete', })} onConfirm={() => delCurrentRow(record.id)}>
               <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.delete', })}</a>
             </Popconfirm>
+            <Divider type="vertical" />
+            <a key="hist" onClick={async () => { await handleBtnClick("hist", record) }} >
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.hist', })}
+            </a>
           </span>
         );
       },
@@ -344,7 +353,19 @@ const DbConnList = () => {
         }}
       >
         <UpdateDBConnDetails data={currentRow || {}} onSubmit={clearData}></UpdateDBConnDetails>
+      
       </ModalForm>
+      <HistForm
+        onCancel={() => {
+          handleHistModalVisible(false);
+          setCurrentRow(undefined);
+        }}
+        histModalVisible={histModelVisible}
+        values={currentRow || {}}
+        funcTag={'testDBConnectionInfo'}
+      />
+
+
     </PageContainer>
   );
 };

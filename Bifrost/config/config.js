@@ -174,6 +174,12 @@ export default defineConfig({
           component: './uiTest/dashboard',
           icon: 'smile',
         },
+        {
+          path: '/uiTest/singlePage',
+          name: 'singlePage',
+          icon: 'smile',
+          component: './uiTest/singlePage',
+        },
       ],
     },
     {

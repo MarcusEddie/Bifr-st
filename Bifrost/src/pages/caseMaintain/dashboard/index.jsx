@@ -7,6 +7,7 @@ import UpdateForm from './components/UpdateForm';
 import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
 import ModuleSelect from './components/ModuleSelect';
+import HistForm from './components/HistForm';
 import FuncSelect from './components/FuncSelect';
 import { getApps } from '@/services/backend/app';
 import { getTestCaseState, getTestCasesByParams, deactivateTestCaseById, delTestCaseById, updateTestCase, activateTestCaseById } from '@/services/backend/testcase';
@@ -26,68 +27,13 @@ const __rest = (this && this.__rest) || function (s, e) {
   return t;
 };
 
-// const loadingModules = async (rootId) => {
-//   const rs = [];
-//   const modules = await getModules(rootId);
-//   if (modules && modules.data) {
-//     return modules.data;
-//   }
-//   return rs;
-// }
-
-// const loadingFuncs = async (rootId) => {
-//   const rs = [];
-//   const funcs = await getFunctions(rootId);
-//   if (funcs && funcs.data) {
-//     return funcs.data;
-//   }
-//   return rs;
-// }
-
 const TestCasesList = () => {
   const intl = useIntl();
   const actionRef = useRef();
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [viewModalVisible, handleViewModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
-
-  // const ModuleSelect = (props) => {
-  //   const { state } = props;
-  //   const [innerOptions, setOptions] = useState([]);
-  //   useEffect(() => {
-  //     const { rootId } = state || {};
-  //     const modules = loadingModules(rootId);
-  //     const rs = [];
-  //     rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
-  //     modules.then((data) => {
-  //       for (let i = 0; i < data.length; i += 1) {
-  //         rs.push({ label: data[i].name, value: data[i].id });
-  //       }
-  //       setOptions(rs);
-  //     })
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [JSON.stringify(state)]);
-  //   return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
-  // };
-
-  // const FuncSelect = (props) => {
-  //   const { state } = props;
-  //   const [innerOptions, setOptions] = useState([]);
-  //   useEffect(() => {
-  //     const { rootId } = state || {};
-  //     const funcs = loadingFuncs(rootId);
-  //     const rs = [];
-  //     rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
-  //     funcs.then((data) => {
-  //       for (let i = 0; i < data.length; i += 1) {
-  //         rs.push({ label: data[i].name, value: data[i].id });
-  //       }
-  //       setOptions(rs);
-  //     })
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [JSON.stringify(state)]);
-  //   return <Select options={innerOptions} defaultValue={intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', })} onChange={props.onChange} />;
-  // };
+  const [histModelVisible, handleHistModalVisible] = useState(false);
 
   const loadingApps = async () => {
     const rs = [];
@@ -362,6 +308,12 @@ const TestCasesList = () => {
             <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.delete', })} onConfirm={() => delCurrentRow(record.id)}>
               <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.delete', })}</a>
             </Popconfirm>
+            <Divider type="vertical" />
+            <a key="hist" onClick={async () => { 
+                handleHistModalVisible(true);
+                setCurrentRow(record);}} >
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.hist', })}
+            </a>
           </span>
         );
       },
@@ -442,6 +394,15 @@ const TestCasesList = () => {
         }}
         viewModalVisible={viewModalVisible}
         values={currentRow || {}}
+      />
+      <HistForm
+        onCancel={() => {
+          handleHistModalVisible(false);
+          setCurrentRow(undefined);
+        }}
+        histModalVisible={histModelVisible}
+        values={currentRow || {}}
+        funcTag={'caseGeneralInfo'}
       />
     </PageContainer>
   );

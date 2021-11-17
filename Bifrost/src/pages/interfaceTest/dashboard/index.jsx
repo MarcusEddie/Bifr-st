@@ -6,6 +6,7 @@ import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
 import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
+import HistForm from './components/HistForm';
 import { getFunctions, getModules, getApps } from '@/services/backend/app';
 import { getTestCaseState, getTestCasesByParams } from '@/services/backend/testcase';
 import { getCasePriority, getCaseCheckMode } from '@/services/backend/generalApis';
@@ -49,6 +50,7 @@ const TestCasesList = () => {
   const actionRef = useRef();
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [viewModalVisible, handleViewModalVisible] = useState(false);
+  const [histModelVisible, handleHistModalVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState();
   const [showResultJson, setShowResultJson] = useState(true);
   const [selectedGeneralCase, setSelectedGeneralCase] = useState();
@@ -221,6 +223,8 @@ const TestCasesList = () => {
       handleViewModalVisible(true);
     } else if (key.toString() === 'update') {
       handleUpdateModalVisible(true);
+    } else if (key.toString() === 'hist') {
+      handleHistModalVisible(true)
     }
 
     setCurrentRow(record);
@@ -479,6 +483,10 @@ const TestCasesList = () => {
             <Popconfirm title={intl.formatMessage({ id: 'ui.msg.caseMaintain.dashboard.actions.sure.delete', })} onConfirm={() => delCurrentRow(record.id)}>
               <a>{intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.delete', })}</a>
             </Popconfirm>
+            <Divider type="vertical" />
+            <a key="hist" onClick={async () => { await handleBtnClick("hist", record) }} >
+              {intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions.hist', })}
+            </a>
           </span>
         );
       },
@@ -550,6 +558,15 @@ const TestCasesList = () => {
         viewModalVisible={viewModalVisible}
         values={currentRow || {}}
         generalCase={selectedGeneralCase}
+      />
+      <HistForm
+        onCancel={() => {
+          handleHistModalVisible(false);
+          setCurrentRow(undefined);
+        }}
+        histModalVisible={histModelVisible}
+        values={currentRow || {}}
+        funcTag={'apiTestCaseDetails'}
       />
     </PageContainer>
   );
