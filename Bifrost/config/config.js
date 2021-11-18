@@ -70,18 +70,6 @@ export default defineConfig({
       icon: 'dashboard',
       routes: [
         {
-          name: 'analysis',
-          icon: 'smile',
-          path: '/dashboard/analysis',
-          component: './dashboard/analysis',
-        },
-        {
-          name: 'monitor',
-          icon: 'smile',
-          path: '/dashboard/monitor',
-          component: './dashboard/monitor',
-        },
-        {
           name: 'workplace',
           icon: 'smile',
           path: '/dashboard/workplace',
@@ -419,34 +407,9 @@ export default defineConfig({
         },
       ],
     },
-    // {
-    //   name: 'editor',
-    //   icon: 'highlight',
-    //   path: '/editor',
-    //   routes: [
-    //     {
-    //       name: 'flow',
-    //       icon: 'smile',
-    //       path: '/editor/flow',
-    //       component: './editor/flow',
-    //     },
-    //     {
-    //       name: 'mind',
-    //       icon: 'smile',
-    //       path: '/editor/mind',
-    //       component: './editor/mind',
-    //     },
-    //     {
-    //       name: 'koni',
-    //       icon: 'smile',
-    //       path: '/editor/koni',
-    //       component: './editor/koni',
-    //     },
-    //   ],
-    // },
     {
       path: '/',
-      redirect: '/dashboard/analysis',
+      redirect: '/dashboard/workplace',
     },
     {
       component: '404',

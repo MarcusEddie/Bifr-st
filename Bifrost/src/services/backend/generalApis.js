@@ -15,3 +15,7 @@ export async function getCaseCheckMode(){
 export async function getDBType(){
   return request('/api/generalApis/getDBType');
 }
+
+export async function getTestType(){
+  return request('/api/generalApis/getTestType');
+}
