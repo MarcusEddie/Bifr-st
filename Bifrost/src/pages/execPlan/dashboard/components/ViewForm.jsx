@@ -1,11 +1,13 @@
+/* eslint-disable no-else-return */
 import React from 'react';
 import { Modal, Card } from 'antd';
 import GeneralCaseInfo from './GeneralCaseInfo';
 import APICasesDetails from './APICasesDetails';
 import { useIntl } from 'umi';
+import UiCasesDetails from './UiCasesDetails';
 
 const ViewForm = (props) => {
-  window.console.log('VIEW FORM', props);
+
   const [activeTapKey, setActiveTapKey] = React.useState('basicInfo');
   const intl = useIntl();
 
@@ -25,13 +27,22 @@ const ViewForm = (props) => {
       return <GeneralCaseInfo info={props.generalCase} values={props.values || []} />;
     }
 
-    if (tabValue === 'caseInfo') {
+    window.console.log(props.values);
+
+    if (tabValue === 'caseInfo' && props.values.testType === "API_Test") {
       const priority = new Map();
       priority.set('P1', 'red');
       priority.set('P2', 'yellow');
       priority.set('P3', 'blue');
       priority.set('P4', 'green');
       return <APICasesDetails prio={priority} values={props.values || {}} />;
+    } else if (tabValue === 'caseInfo' && props.values.testType === "UI_Auto_Test") {
+      const priority = new Map();
+      priority.set('P1', 'red');
+      priority.set('P2', 'yellow');
+      priority.set('P3', 'blue');
+      priority.set('P4', 'green');
+      return <UiCasesDetails prio={priority} values={props.values || {}} />;
     }
 
     return null;

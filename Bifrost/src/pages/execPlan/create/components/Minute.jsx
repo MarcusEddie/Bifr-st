@@ -11,7 +11,7 @@ const { Option } = Select;
 
 const CheckboxGroup = Checkbox.Group;
 
-const Second = (props) => {
+const Minute = (props) => {
   const intl = useIntl();
 
   const plainOptions = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -50,6 +50,8 @@ const Second = (props) => {
     '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
 
   const [checkedList, setCheckedList] = React.useState([]);
+  const [indeterminate, setIndeterminate] = React.useState(true);
+  const [checkAll, setCheckAll] = React.useState(false);
   const [secondCheckBoxEnable, setSecondCheckBoxEnable] = React.useState(true);
   const [secondVal, setSecondVal] = React.useState(1);
   const [s1, setS1] = React.useState(plainOptionsN1);
@@ -61,8 +63,16 @@ const Second = (props) => {
   const [s4, setS4] = React.useState(plainOptionsN4);
   const [s4Val, setS4Val] = React.useState(1);
 
+  const onCheckAllChange = e => {
+    setCheckedList(e.target.checked ? plainOptions : []);
+    setIndeterminate(false);
+    setCheckAll(e.target.checked);
+  };
+
   const onChange = list => {
     setCheckedList(list);
+    setIndeterminate(!!list.length && list.length < plainOptions.length);
+    setCheckAll(list.length === plainOptions.length);
   };
 
   const secondRadionChange = async (e) => {
@@ -82,11 +92,11 @@ const Second = (props) => {
       <Radio.Group value={secondVal} onChange={secondRadionChange}>
         <Space direction="vertical">
           <Row >
-            <Radio defaultChecked={true} value={1}>{intl.formatMessage({ id: 'pages.execPlan.cron.second.seconds', })}</Radio>
+            <Radio defaultChecked={true} value={1}>{intl.formatMessage({ id: 'pages.execPlan.cron.minutes.min', })}</Radio>
           </Row>
           <Row>
-            <Col span={7}>
-              <Radio value={2}>{intl.formatMessage({ id: 'pages.execPlan.cron.second.period.one', })}&nbsp;
+            <Col span={8}>
+              <Radio value={2}>{intl.formatMessage({ id: 'pages.execPlan.cron.minute.period.one', })}&nbsp;
               </Radio>
             </Col>
             <Col span={6}>
@@ -106,7 +116,7 @@ const Second = (props) => {
           </Row>
           <Row >
             <Col span={11}>
-              <Radio value={3}>{intl.formatMessage({ id: 'pages.execPlan.cron.second.period.min.one', })}&nbsp;
+              <Radio value={3}>{intl.formatMessage({ id: 'pages.execPlan.cron.minute.period.min.one', })}&nbsp;
               </Radio>
             </Col>
             <Col span={6}>
@@ -128,6 +138,7 @@ const Second = (props) => {
           </Row>
           <Row >
             <Radio value={4}>{intl.formatMessage({ id: 'pages.execPlan.cron.second.period.second.deconds', })}</Radio>
+            {/* <Checkbox disabled={secondCheckBoxEnable} indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>ALL</Checkbox> */}
           </Row>
           <Row>
             <CheckboxGroup disabled={secondCheckBoxEnable} value={checkedList} onChange={onChange} >
@@ -211,4 +222,4 @@ const Second = (props) => {
   );
 };
 
-export default Second;
+export default Minute;

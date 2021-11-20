@@ -1,39 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { useIntl } from 'umi';
-import { Card, Result, Button, Select, Form, Descriptions, Divider, Switch, Input, } from 'antd';
-// import { , Col, Row, Form, Input, message, Descriptions } from 'antd';
+import { Card, Result, Button, Select, Form, Descriptions, Divider, Switch, Input, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, { ProFormGroup, ProFormSelect, ProFormDateTimePicker, StepsForm } from '@ant-design/pro-form';
 import styles from './style.less';
 import { getFunctions, getFunctionById, getModules, getModuleById, getApps, getAppById } from '@/services/backend/app';
+import { getApiTestCasesByParams } from '@/services/backend/apiTest';
 import { getTestType, getCasePriority } from '@/services/backend/generalApis';
 import SchedulingForm from './components/SchedulingForm';
-import TableTransfer from './components/TableTransfer';
+import ApiTableTransfer from './components/ApiTableTransfer';
+import UiTableTransfer from './components/UiTableTransfer';
 import InfoBoard from './components/InfoBoard';
+import { calculateNextTriggerTime, addOnePlan } from '@/services/backend/testPlan';
+import { getUiTestCasesByParams } from '@/services/backend/uiTest';
+import { isNotBlank } from '@/utils/StringUtils';
 
 const { Option } = Select;
-
-const StepResult = (props) => {
-
-  return (
-    <Result
-      status="success"
-      title="操作成功"
-      subTitle="预计两小时内到账"
-      extra={
-        <>
-          <Button type="primary" onClick={props.onFinish}>
-            再转一笔
-          </Button>
-          <Button>查看账单</Button>
-        </>
-      }
-      className={styles.result}
-    >
-      {props.children}
-    </Result>
-  );
-};
 
 function getIdxInArray(arr, obj) {
   const len = arr.length;
@@ -60,8 +42,14 @@ const TestPlanForm = () => {
   const [funcs, setFuncs] = React.useState([]);
   const [funcId, setFuncId] = React.useState(ALL);
   const [funcVal, setFuncVal] = React.useState(ALL);
+  const [cronVal, setCronVal] = React.useState('nah');
   const [doRepeat, setDoRepeat] = React.useState(false);
   const [components, setComponents] = React.useState(undefined);
+  const [compTransfer, setCompTransfer] = React.useState(undefined);
+  const [dataSet, setDataSet] = React.useState([]);
+  const [targetKeys, setTargetKeys] = React.useState([]);
+  const [dataToBeSaved, setDataToBeSaved] = React.useState(new Map());
+  const [cronFlag, setCronFlag] = useState(undefined);
 
   const handleDropDownChange = async () => {
     const appsVal = await getApps();
@@ -174,30 +162,222 @@ const TestPlanForm = () => {
     return prios;
   }
 
+  const checkAndSaveCron = async (value) => {
+    setCronVal(value);
+  }
   const switchToOneTime = async (checked) => {
-    window.console.log(checked);
     setDoRepeat(checked);
     let rs;
     if (checked) {
+      rs = <><SchedulingForm viewModalVisible={!checked} rtnCron={checkAndSaveCron}></SchedulingForm></>
+      setComponents(rs);
+    } else {
       rs = <ProFormDateTimePicker name="triggerTime" rules={[{ required: true, message: 'Please select your country!' }]} fieldProps={{
         inputReadOnly: true
       }} label={intl.formatMessage({ id: 'pages.execPlan.defination.trigger.time', })} />
       setComponents(rs);
-    } else {
-      rs = <><SchedulingForm viewModalVisible={!checked}></SchedulingForm></>
-      setComponents(rs);
     }
   }
 
-  const StepDescriptions = ({ bordered }) => {
-    return (
-      <Descriptions column={1} bordered={bordered}>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })}> {appVal}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', })}> {moduleVal}</Descriptions.Item>
-        <Descriptions.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}> {funcVal}</Descriptions.Item>
-      </Descriptions>
-    );
-  };
+  const detailsInS2Check = async (values) => {
+    if (cronVal === 'nah' && !doRepeat) {
+      message.error(intl.formatMessage({ id: 'pages.execPlan.defination.cron.is.invalid', }));
+      return false;
+    }
+
+    return true;
+  }
+
+  const detailsInS3Check = async (values) => {
+    if (targetKeys.length === 0) {
+      message.error(intl.formatMessage({ id: 'pages.execPlan.defination.case.not.selected', }));
+      return false;
+    }
+
+    return true;
+  }
+
+  const saveSelectedTestCases = async (values) => {
+    setTargetKeys(values);
+  }
+
+  const loadingApiTestCases = async () => {
+    const strucObj = Object.create(null);
+    strucObj.app = appId;
+    if (moduleId !== ALL) {
+      strucObj.module = moduleId;
+    }
+    if (funcId !== ALL) {
+      strucObj.function = funcId;
+    }
+    strucObj.state = 'enabled';
+    strucObj.current = 1;
+    strucObj.pageSize = 10000;
+    const tstCases = await getApiTestCasesByParams(strucObj);
+
+    if (tstCases && tstCases.data) {
+      const mockData = [];
+      if (tstCases.data.length > 0) {
+        for (let i = 0; i < tstCases.data.length; i += 1) {
+          mockData.push({
+            key: tstCases.data[i].id.toString(),
+            id: tstCases.data[i].id,
+            name: tstCases.data[i].name,
+            priority: tstCases.data[i].priority,
+            generalCaseName: tstCases.data[i].generalCaseName,
+            appName: tstCases.data[i].api.appName,
+            moduleName: tstCases.data[i].api.moduleName,
+            functionName: tstCases.data[i].api.functionName,
+            apiName: tstCases.data[i].api.name,
+          });
+        }
+
+        const comp = <><ApiTableTransfer data={mockData} originTargetKeys={targetKeys} saveCases={saveSelectedTestCases}></ApiTableTransfer></>
+        setCompTransfer(comp);
+        setDataSet(mockData);
+      }
+    }
+  }
+
+  const loadingUiTestCases = async () => {
+    const strucObj = Object.create(null);
+    strucObj.app = appId;
+    if (moduleId !== ALL) {
+      strucObj.module = moduleId;
+    }
+    if (funcId !== ALL) {
+      strucObj.function = funcId;
+    }
+    strucObj.state = 'enabled';
+    strucObj.current = 1;
+    strucObj.pageSize = 10000;
+    const tstCases = await getUiTestCasesByParams(strucObj);
+    if (tstCases && tstCases.data) {
+      const mockData = [];
+      if (tstCases.data.length > 0) {
+        for (let i = 0; i < tstCases.data.length; i += 1) {
+          mockData.push({
+            key: tstCases.data[i].id.toString(),
+            id: tstCases.data[i].id,
+            name: tstCases.data[i].name,
+            priority: tstCases.data[i].priority,
+            generalCaseName: tstCases.data[i].generalCaseName,
+            appName: tstCases.data[i].page.appName,
+            moduleName: tstCases.data[i].page.moduleName,
+            functionName: tstCases.data[i].page.functionName,
+            pageName: tstCases.data[i].page.name,
+          });
+        }
+
+        const comp = <><UiTableTransfer data={mockData} originTargetKeys={targetKeys} saveCases={saveSelectedTestCases}></UiTableTransfer></>
+        setCompTransfer(comp);
+        setDataSet(mockData);
+      }
+    }
+  }
+
+  const loadingTestCasesByStructureInfo = async (values) => {
+    if (values.testType === 'API_Test') {
+      await loadingApiTestCases();
+    } else if (values.testType === 'UI_Auto_Test') {
+      await loadingUiTestCases();
+    }
+  }
+
+  const isSelectedAppAvailable = async (apPId) => {
+    const queryRs = await getAppById(apPId);
+    if (queryRs && queryRs.data) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const isSelectedModuleAvailable = async (modueId) => {
+    const queryRs = await getModuleById(modueId);
+    if (queryRs && queryRs.data) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const isSelectedFuncAvailable = async (functionId) => {
+    const queryRs = await getFunctionById(functionId);
+    if (queryRs && queryRs.data) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const isSelectedAppStructureAvailable = async () => {
+    if (appId === ALL) {
+      message.error('Please select an app');
+      return false;
+    }
+    let availableFlag = await isSelectedAppAvailable(appId);
+    if (!availableFlag) {
+      message.error('The selected app is unavailable, check it please');
+      return false;
+    }
+    if (moduleId !== ALL) {
+      availableFlag = await isSelectedModuleAvailable(moduleId);
+      if (!availableFlag) {
+        message.error('The selected module is unavailable, check it please');
+        return false;
+      }
+    }
+    if (funcId !== ALL) {
+      availableFlag = await isSelectedFuncAvailable(funcId);
+      if (!availableFlag) {
+        message.error('The selected function is unavailable, check it please');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  const handleSavePlanSubmit = async (values) => {
+    isSelectedAppStructureAvailable();
+
+    const strucObj = Object.create(null);;
+    strucObj.app = appId;
+    strucObj.module = 0;
+    strucObj.function = 0;
+    if (moduleId !== ALL) {
+      strucObj.module = moduleId;
+    }
+    if (funcId !== ALL) {
+      strucObj.function = funcId;
+    }
+    strucObj.planName = values.testName;
+    strucObj.testType = values.testType;
+    strucObj.casePriority = values.casePriority;
+    strucObj.repeatFlag = values.repeatFlag;
+    strucObj.triggerTime = values.triggerTime;
+    strucObj.cron = cronVal;
+    strucObj.caseSet = targetKeys;
+
+    const rs = await addOnePlan(strucObj);
+    if (rs && rs.success.toString() === 'true') {
+      message.success('提交成功');
+      return true;
+    }
+    message.error('失败');
+    return false;
+  }
+
+  const cronValExplain = async (value) => {
+    if (isNotBlank(value)) {
+      const rs = await calculateNextTriggerTime(value);
+      if (rs && rs.data) {
+        setCronFlag(rs.data.content);
+      }
+
+    }
+  }
 
   return (
     <PageContainer>
@@ -214,26 +394,39 @@ const TestPlanForm = () => {
           //     return dom;
           //   },
           // }}
-        >
-        {/* <StepsForm current={current} onCurrentChange={setCurrent}
           onFinish={async (values) => {
-            const success = await handleSaveNewCaseSubmit(values);
+            const success = await handleSavePlanSubmit(values);
 
             if (success) {
               message.success('提交成功');
-              setFuncBondInNew(0);
-              setAppValInNew(ALL);
-              setApps([]);
-              setModuleValInNew(ALL);
-              setModulesInNew([]);
-              setFuncValInNew(ALL);
-              setFuncsInNew([]);
+              setAppId(ALL);
+              setAppVal(ALL);
+              setModuleId(ALL);
+              setModuleVal(ALL);
+              setFuncId(ALL);
+              setFuncVal(ALL);
+
+
+              setDoRepeat(false);
+              setComponents(undefined);
+              setCronFlag(undefined);
+              setDataSet([]);
+              setTargetKeys([]);
+              setDataToBeSaved(new Map())
+              setCompTransfer(undefined);
+              // setFuncBondInNew(0);
+              // setAppValInNew(ALL);
+              // setApps([]);
+              // setModuleValInNew(ALL);
+              // setModulesInNew([]);
+              // setFuncValInNew(ALL);
+              // setFuncsInNew([]);
               return true;
             }
             message.error('失败');
             return false;
           }}
-        > */}
+        >
           <StepsForm.StepForm
             formRef={formRef}
             title={intl.formatMessage({ id: 'pages.caseMaintain.create.case.function.selection', })}
@@ -275,15 +468,32 @@ const TestPlanForm = () => {
               </Select>
             </Form.Item >
           </StepsForm.StepForm>
-          <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.details', })}>
-            <div className={styles.result}>
-              <StepDescriptions bordered />
-              <Divider
-                style={{
-                  margin: '24px 0',
-                }}
-              />
-            </div>
+
+          <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.details', })} style={{ width: 750 }}
+            onFinish={async (values) => {
+              const map = new Map();
+              map.set('testName', values.testName);
+              map.set('testType', values.testType);
+              map.set('casePriority', values.casePriority);
+              map.set('repeatFlag', values.repeatFlag);
+              if (values.repeatFlag) {
+                map.set('triggerTime', cronVal);
+                cronValExplain(cronVal);
+              } else {
+                map.set('triggerTime', values.triggerTime);
+              }
+              setDataToBeSaved(map);
+
+              const checkFlag = await detailsInS2Check(values);
+
+              if (checkFlag) {
+                await loadingTestCasesByStructureInfo(values);
+                return true;
+              }
+
+              return false;
+            }}
+          >
             <Form.Item name="testName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
               <Input id="testName" maxLength={255}></Input>
             </Form.Item >
@@ -307,35 +517,28 @@ const TestPlanForm = () => {
                 allowClear: false
               }}
             />
-            <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue= {true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue={true} rules={[{ required: true, message: 'Please select your function!' }]}>
               <Switch checkedChildren unCheckedChildren defaultChecked onChange={switchToOneTime} />
             </Form.Item >
-            {/* <SchedulingForm repeat={doRepeat}></SchedulingForm> */}
             {components}
           </StepsForm.StepForm>
-          <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.cases.set.selection', })}>
-            <TableTransfer></TableTransfer>
+          <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.cases.set.selection', })}
+            onFinish={async (values) => {
+              const checkFlag = await detailsInS3Check(values);
+
+              if (checkFlag) {
+                return true;
+              }
+
+              return false;
+            }}
+          >
+            {compTransfer}
           </StepsForm.StepForm>
           <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.cases.set.confirm', })}>
-            <InfoBoard></InfoBoard>
+            <InfoBoard appVal={appVal} moduleVal={moduleVal} funcVal={funcVal} name={dataToBeSaved.get('testName')} testType={dataToBeSaved.get('testType')} priority={dataToBeSaved.get('casePriority')} repeat={dataToBeSaved.get('repeatFlag') ? 'YES' : 'NO'} triggerTime={dataToBeSaved.get('triggerTime')} caseSize={targetKeys.length} cron={cronFlag}></InfoBoard>
           </StepsForm.StepForm>
         </StepsForm>
-        {/* <Divider
-          style={{
-            margin: '40px 0 24px',
-          }}
-        /> */}
-        {/* <div className={styles.desc}>
-          <h3>说明</h3>
-          <h4>转账到支付宝账户</h4>
-          <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-          </p>
-          <h4>转账到银行卡</h4>
-          <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-          </p>
-        </div> */}
       </Card>
     </PageContainer>
   );

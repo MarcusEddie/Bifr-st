@@ -1,19 +1,22 @@
 import { request } from 'umi';
 
-export async function addOnePlan(fields, pGeneralCaseId) {
+export async function addOnePlan(strucObj) {
   return request('/api/plan/addOnePlan', { 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     data: {
-      pageId: fields.pageSelected,
-      name: fields.caseName,
-      priority: fields.casePriority,
-      parameters: fields.caseParams,
-      expectedResult: fields.caseResult,
-      steps: fields.caseSteps,
-      generalCaseId: pGeneralCaseId
+      appId: strucObj.app,
+      moduleId: strucObj.module,
+      functionId: strucObj.function,
+      name: strucObj.planName,
+      testType: strucObj.testType,
+      priority: strucObj.casePriority,
+      repeatFlag: strucObj.repeatFlag,
+      triggerTime: strucObj.triggerTime,
+      cron: strucObj.cron,
+      caseSet: strucObj.caseSet,
     },
   });
 }
@@ -161,8 +164,38 @@ export async function cronExplain(pCron){
   });
 }
 
+export async function calculateNextTriggerTime(pCron){
+  return request('/api/plan/calculateNextTriggerTime', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      cron: pCron
+    },
+  });
+}
+
 export async function getAPITestCaseByPlanId(params, options, pId){
   return request('/api/plan/getAPITestCaseByPlanId', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      params:{
+        id: pId
+      },
+      pageInfo:{
+        current: params.current,
+        pageSize: params.pageSize
+      }
+    },
+  });
+}
+
+export async function getUiTestCaseByPlanId(params, options, pId){
+  return request('/api/plan/getUiTestCaseByPlanId', { 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

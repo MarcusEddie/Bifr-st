@@ -371,7 +371,7 @@ const TestCasesList = () => {
       render: (_, record) => { return (record.page.functionName) }
     },
     {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', }),
+      title: intl.formatMessage({ id: 'pages.uiTest.create.newCase.page', }),
       width: 200,
       dataIndex: 'pageName',
       hideInSearch: true,

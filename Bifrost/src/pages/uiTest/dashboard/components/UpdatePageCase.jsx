@@ -130,7 +130,7 @@ const UpdatePageCase = (props) => {
         }}
         style={{ height: 750 }}
       >
-        <Form.Item label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', })}>
+        <Form.Item label={intl.formatMessage({ id: 'pages.uiTest.create.newCase.page', })}>
           <Select defaultValue={rowSelected.values.page.name} disabled={true}></Select>
         </Form.Item >
         <Descriptions column={1} bordered={true} size={'small'}>

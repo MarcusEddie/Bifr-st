@@ -1,10 +1,10 @@
-import { Transfer, Switch, Table, Tag } from 'antd';
+import { Transfer, Switch, Table, Tag, Divider } from 'antd';
 import difference from 'lodash/difference';
 import React from 'react';
+import { useIntl } from 'umi';
 
 // Customize Table Transfer
 const TransferC = ({ leftColumns, rightColumns, ...restProps }) => (
-  
   <Transfer {...restProps} pagination={{ pageSize: 20, showSizeChanger: true, showQuickJumper: true, }}>
     {({
       direction,
@@ -52,18 +52,12 @@ const TransferC = ({ leftColumns, rightColumns, ...restProps }) => (
   </Transfer>
 );
 
-
-const mockData = [];
-for (let i = 0; i < 20; i++) {
-  mockData.push({
-    key: i.toString(),
-    title: `content${i + 1}`,
-    description: `description of content${i + 1}`,
-    disabled: i % 4 === 0,
-  });
-}
-
-const originTargetKeys = mockData.filter(item => +item.key % 3 > 1).map(item => item.key);
+const priorityFlag = new Map();
+priorityFlag.set('P1', 'red');
+priorityFlag.set('P2', 'yellow');
+priorityFlag.set('P3', 'blue');
+priorityFlag.set('P4', 'green');
+// const originTargetKeys = mockData.filter(item => +item.key % 3 > 1).map(item => item.key);
 
 const leftTableColumns = [
   {
@@ -88,7 +82,7 @@ const leftTableColumns = [
     dataIndex: 'priority',
     hideInSearch: true,
     fixed: 'left',
-    // render: (_, record) => <Tag color={priorityFlag.get(record.priority)}>{record.priority}</Tag>,
+    render: (_, record) => <Tag color={priorityFlag.get(record.priority)}>{record.priority}</Tag>,
   },
   {
     title: 'generalCaseName',
@@ -103,7 +97,6 @@ const leftTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.moduleName) }
   },
   {
     title: 'moduleName',
@@ -111,7 +104,6 @@ const leftTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.moduleName) }
   },
   {
     title: 'functionName',
@@ -119,15 +111,13 @@ const leftTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.functionName) }
   },
   {
-    title: 'apiName',
+    title: 'pageName',
     width: 50,
-    dataIndex: 'apiName',
+    dataIndex: 'pageName',
     hideInSearch: true,
     ellipsis: true,
-    // render: (_, record)/ => { return (record.api.name) }
   },
 ];
 const rightTableColumns = [
@@ -153,7 +143,7 @@ const rightTableColumns = [
     dataIndex: 'priority',
     hideInSearch: true,
     fixed: 'left',
-    // render: (_, record) => <Tag color={priorityFlag.get(record.priority)}>{record.priority}</Tag>,
+    render: (_, record) => <Tag color={priorityFlag.get(record.priority)}>{record.priority}</Tag>,
   },
   {
     title: 'generalCaseName',
@@ -168,7 +158,6 @@ const rightTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.moduleName) }
   },
   {
     title: 'moduleName',
@@ -176,7 +165,6 @@ const rightTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.moduleName) }
   },
   {
     title: 'functionName',
@@ -184,59 +172,59 @@ const rightTableColumns = [
     width: 50,
     ellipsis: true,
     hideInSearch: true,
-    // render: (_, record) => { return (record.api.functionName) }
   },
   {
-    title: 'apiName',
+    title: 'pageName',
     width: 50,
-    dataIndex: 'apiName',
+    dataIndex: 'pageName',
     hideInSearch: true,
     ellipsis: true,
-    // render: (_, record)/ => { return (record.api.name) }
   },
 ];
 
-class TableTransfer extends React.Component {
-  state = {
-    targetKeys: originTargetKeys,
-    disabled: false,
-    showSearch: false,
-  };
+const UiTableTransfer = (props) => {
+  const intl = useIntl();
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [targetKeys, setTargetKeys] = React.useState(props.originTargetKeys);
 
-  onChange = nextTargetKeys => {
-    this.setState({ targetKeys: nextTargetKeys });
-  };
-
-  triggerShowSearch = showSearch => {
-    this.setState({ showSearch });
-  };
-
-  render() {
-    const { targetKeys, disabled, showSearch } = this.state;
-    return (
-      <>
-        <TransferC
-          dataSource={mockData}
-          targetKeys={targetKeys}
-          disabled={disabled}
-          showSearch={showSearch}
-          onChange={this.onChange}
-          filterOption={(inputValue, item) =>
-            item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-          }
-          leftColumns={leftTableColumns}
-          rightColumns={rightTableColumns}
-        />
-        <Switch
-          unCheckedChildren="showSearch"
-          checkedChildren="showSearch"
-          checked={showSearch}
-          onChange={this.triggerShowSearch}
-          style={{ marginTop: 16 }}
-        />
-      </>
-    );
+  const triggerShowSearch = async (value) => {
+    setShowSearch(value);
   }
-}
 
-export default TableTransfer;
+  const onChange = async (nextTargetKeys) => {
+    setTargetKeys(nextTargetKeys);
+    props.saveCases(nextTargetKeys);
+  }
+
+  return (
+    <>
+      <Divider
+        style={{
+          margin: '24px 0',
+        }}
+      />
+      <Switch
+        unCheckedChildren="showSearch"
+        checkedChildren="showSearch"
+        checked={showSearch}
+        onChange={triggerShowSearch}
+        style={{ marginTop: 16 }}
+      />
+      <TransferC
+        dataSource={props.data}
+        targetKeys={targetKeys}
+        titles={[intl.formatMessage({ id: 'pages.execPlan.create.dataSource.source', }), intl.formatMessage({ id: 'pages.execPlan.create.dataSource.dest', })]}
+        disabled={false}
+        showSearch={showSearch}
+        onChange={onChange}
+        filterOption={(inputValue, item) =>
+          item.name.indexOf(inputValue) !== -1 || item.generalCaseName.indexOf(inputValue) !== -1
+        }
+        leftColumns={leftTableColumns}
+        rightColumns={rightTableColumns}
+      />
+    </>
+  );
+};
+
+export default UiTableTransfer;

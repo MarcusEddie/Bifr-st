@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Tag, Form } from 'antd';
 import { useIntl } from 'umi';
 import ProTable from '@ant-design/pro-table';
-import { getAPITestCaseByPlanId } from '@/services/backend/testPlan';
+import { getUiTestCaseByPlanId } from '@/services/backend/testPlan';
 
-const APICasesDetails = (props) => {
+const UiCasesDetails = (props) => {
   const intl = useIntl();
   const actionRef = useRef();
 
@@ -34,12 +34,12 @@ const APICasesDetails = (props) => {
       render: (_, record) => <Tag color={props.prio.get(record.priority)}>{record.priority}</Tag>,
     },
     {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', }),
+      title: intl.formatMessage({ id: 'pages.uiTest.create.newCase.page', }),
       width: 200,
-      dataIndex: 'apiName',
+      dataIndex: 'pageName',
       hideInSearch: true,
       ellipsis: true,
-      render: (_, record) => { return (record.api.name) }
+      render: (_, record) => { return (record.page.name) }
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.module', }),
@@ -47,7 +47,7 @@ const APICasesDetails = (props) => {
       width: 200,
       ellipsis: true,
       hideInSearch: true,
-      render: (_, record) => { return (record.api.moduleName) }
+      render: (_, record) => { return (record.page.moduleName) }
     },
     {
       title: intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', }),
@@ -55,34 +55,13 @@ const APICasesDetails = (props) => {
       width: 200,
       ellipsis: true,
       hideInSearch: true,
-      render: (_, record) => { return (record.api.functionName) }
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', }),
-      width: 130,
-      dataIndex: 'resultCheckMode',
-      hideInSearch: true,
-      valueEnum: {
-        RESPONSE_DATA: {
-          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.RESPONSE_DATA', }),
-        },
-        DB_DATA: {
-          text: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode.DB_DATA', }),
-        },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.dbConnection', }),
-      width: 200,
-      dataIndex: 'dbConnName',
-      hideInSearch: true,
-      ellipsis: true,
+      render: (_, record) => { return (record.page.functionName) }
     }
    ]
 
   const loadingData = async (fields, options) => {
 
-    const data = await getAPITestCaseByPlanId(fields, options, props.values.id);
+    const data = await getUiTestCaseByPlanId(fields, options, props.values.id);
     return data;
   }
 
@@ -103,4 +82,4 @@ const APICasesDetails = (props) => {
   );
 };
 
-export default APICasesDetails;
+export default UiCasesDetails;
