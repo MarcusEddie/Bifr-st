@@ -19,3 +19,15 @@ export async function getDBType(){
 export async function getTestType(){
   return request('/api/generalApis/getTestType');
 }
+
+export async function getTaskStateInQueue(){
+  return request('/api/generalApis/getTaskStateInQueue');
+}
+
+export async function getTaskStateInHist(){
+  return request('/api/generalApis/getTaskStateInHistory');
+}
+
+export async function getTriggerType(){
+  return request('/api/generalApis/getTriggerType');
+}

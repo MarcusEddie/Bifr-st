@@ -8,7 +8,7 @@ import ViewForm from './components/ViewForm';
 import BulkActions from './components/BulkActions';
 import { getFunctions, getModules, getApps } from '@/services/backend/app';
 import { getTestCaseState } from '@/services/backend/testcase';
-import { getCasePriority, getTestType } from '@/services/backend/generalApis';
+import { getCasePriority, getTestType, getTriggerType } from '@/services/backend/generalApis';
 import { getPlanByParams, deleteById, deactivateById, activateById, cronExplain } from '@/services/backend/testPlan';
 import HistForm from './components/HistForm';
 import { isNotBlank } from '@/utils/StringUtils';
@@ -158,6 +158,20 @@ const PlanList = () => {
     if (states && states.data) {
       for (let i = 0; i < states.data.length; i += 1) {
         rs.push({ label: states.data[i], value: states.data[i] });
+      }
+    }
+
+    return rs;
+  }
+
+  const loadingTriggerType = async () => {
+    const rs = [];
+    const states = await getTriggerType();
+    rs.push({ label: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }), value: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }) });
+    if (states && states.data) {
+      for (let i = 0; i < states.data.length; i += 1) {
+        const labelId = `pages.execPlan.defination.trigger.triggerType.${states.data[i]}`;
+        rs.push({ label: intl.formatMessage({ id: labelId, }), value: states.data[i] });
       }
     }
 
@@ -314,7 +328,17 @@ const PlanList = () => {
         return rs;
       },
     },
-
+    {
+      title: intl.formatMessage({ id: 'pages.execPlan.defination.trigger.triggerType', }),
+      dataIndex: 'triggerType',
+      width: '5%',
+      initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
+      hideInTable: true,
+      request: async () => {
+        const rs = await loadingTriggerType();
+        return rs;
+      },
+    },
     {
       title: 'ID',
       dataIndex: 'id',
@@ -369,6 +393,21 @@ const PlanList = () => {
       dataIndex: 'caseSize',
       hideInSearch: true,
       ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.execPlan.defination.trigger.triggerType', }),
+      width: 100,
+      dataIndex: 'triggerType',
+      hideInSearch: true,
+      ellipsis: true,
+      valueEnum: {
+        scheduling: {
+          text: intl.formatMessage({ id: 'pages.execPlan.defination.trigger.triggerType.scheduling', }),
+        },
+        jenkins: {
+          text: intl.formatMessage({ id: 'pages.execPlan.defination.trigger.triggerType.jenkins', }),
+        },
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.execPlan.defination.trigger.time', }),
@@ -467,6 +506,10 @@ const PlanList = () => {
       // eslint-disable-next-line no-param-reassign
       fields.testType = null;
     }
+    if (fields.triggerType && fields.triggerType.toString() === all.toString()) {
+      // eslint-disable-next-line no-param-reassign
+      fields.triggerType = null;
+    }
 
     const data = await getPlanByParams(fields, options);
     return data;
@@ -474,7 +517,7 @@ const PlanList = () => {
 
   return (
     <PageContainer>
-      <ProTable columns={columns} scroll={{ x: 1500, y: 600 }}
+      <ProTable columns={columns} scroll={{ x: 1500, y: 1000 }}
         actionRef={actionRef}
         request={loadingData}
         rowKey="id"

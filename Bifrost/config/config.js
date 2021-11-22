@@ -214,15 +214,15 @@ export default defineConfig({
       path: '/execHistory',
       routes: [
         {
-          name: 'create',
-          path: '/execHistory/create',
-          component: './execHistory/create',
+          name: 'queue',
+          path: '/execHistory/queue',
+          component: './execHistory/queue',
           icon: 'smile',
         },
         {
-          name: 'dashboard',
-          path: '/execHistory/dashboard',
-          component: './execHistory/dashboard',
+          name: 'history',
+          path: '/execHistory/history',
+          component: './execHistory/history',
           icon: 'smile',
         },
       ],

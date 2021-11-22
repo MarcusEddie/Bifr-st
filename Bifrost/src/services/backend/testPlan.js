@@ -15,6 +15,7 @@ export async function addOnePlan(strucObj) {
       priority: strucObj.casePriority,
       repeatFlag: strucObj.repeatFlag,
       triggerTime: strucObj.triggerTime,
+      triggerType: strucObj.triggerType,
       cron: strucObj.cron,
       caseSet: strucObj.caseSet,
     },
@@ -54,6 +55,7 @@ export async function getPlanByParams(params, options){
         state: params.state,
         priority: params.priority,
         testType: params.testType,
+        triggerType: params.triggerType,
       },
       pageInfo:{
         current: params.current,

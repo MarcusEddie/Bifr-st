@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { useIntl } from 'umi';
-import { Card, Result, Button, Select, Form, Descriptions, Divider, Switch, Input, message } from 'antd';
+import { Card, Select, Form, Switch, Input, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProForm, { ProFormGroup, ProFormSelect, ProFormDateTimePicker, StepsForm } from '@ant-design/pro-form';
+import { ProFormSelect, ProFormDateTimePicker, StepsForm } from '@ant-design/pro-form';
 import styles from './style.less';
 import { getFunctions, getFunctionById, getModules, getModuleById, getApps, getAppById } from '@/services/backend/app';
 import { getApiTestCasesByParams } from '@/services/backend/apiTest';
-import { getTestType, getCasePriority } from '@/services/backend/generalApis';
+import { getTestType, getCasePriority, getTriggerType } from '@/services/backend/generalApis';
 import SchedulingForm from './components/SchedulingForm';
 import ApiTableTransfer from './components/ApiTableTransfer';
 import UiTableTransfer from './components/UiTableTransfer';
@@ -16,16 +16,6 @@ import { getUiTestCasesByParams } from '@/services/backend/uiTest';
 import { isNotBlank } from '@/utils/StringUtils';
 
 const { Option } = Select;
-
-function getIdxInArray(arr, obj) {
-  const len = arr.length;
-  for (let i = 0; i < len; i += 1) {
-    if (parseInt(arr[i].id, 10) === parseInt(obj, 10)) {
-      return i;
-    }
-  }
-  return -1;
-}
 
 const TestPlanForm = () => {
   const intl = useIntl();
@@ -42,6 +32,8 @@ const TestPlanForm = () => {
   const [funcs, setFuncs] = React.useState([]);
   const [funcId, setFuncId] = React.useState(ALL);
   const [funcVal, setFuncVal] = React.useState(ALL);
+  const [triggerTypes, setTriggerTypes] = React.useState([]);
+  const [triggerType, setTriggerType] = React.useState();
   const [cronVal, setCronVal] = React.useState('nah');
   const [doRepeat, setDoRepeat] = React.useState(false);
   const [components, setComponents] = React.useState(undefined);
@@ -50,10 +42,28 @@ const TestPlanForm = () => {
   const [targetKeys, setTargetKeys] = React.useState([]);
   const [dataToBeSaved, setDataToBeSaved] = React.useState(new Map());
   const [cronFlag, setCronFlag] = useState(undefined);
-
+  const [repeatModeDisabledFlag, setRepeatModeDisabledFlag] = useState(false);
   const handleDropDownChange = async () => {
     const appsVal = await getApps();
     setApps(appsVal.data);
+  }
+
+  const handleTriggerTypeDropDownChange = async () => {
+    const rs = [];
+    const triggerTp = await getTriggerType();
+
+    if (triggerTp && triggerTp.data) {
+      for (let i = 0; i < triggerTp.data.length; i += 1) {
+        const labelId = `pages.execPlan.defination.trigger.triggerType.${triggerTp.data[i]}`;
+        rs.push({ label: intl.formatMessage({ id: labelId, }), value: triggerTp.data[i] });
+      }
+    }
+
+    setTriggerTypes(rs);
+  }
+
+  const handleTriggerTypeChange = async (value) => {
+    setTriggerType(value);
   }
 
   const getModulesByAppId = async (fields) => {
@@ -165,7 +175,7 @@ const TestPlanForm = () => {
   const checkAndSaveCron = async (value) => {
     setCronVal(value);
   }
-  const switchToOneTime = async (checked) => {
+  const generateTriggerInfo = async (checked) => {
     setDoRepeat(checked);
     let rs;
     if (checked) {
@@ -179,8 +189,9 @@ const TestPlanForm = () => {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   const detailsInS2Check = async (values) => {
-    if (cronVal === 'nah' && !doRepeat) {
+    if (cronVal === 'nah' && doRepeat) {
       message.error(intl.formatMessage({ id: 'pages.execPlan.defination.cron.is.invalid', }));
       return false;
     }
@@ -188,6 +199,7 @@ const TestPlanForm = () => {
     return true;
   }
 
+  // eslint-disable-next-line no-unused-vars
   const detailsInS3Check = async (values) => {
     if (targetKeys.length === 0) {
       message.error(intl.formatMessage({ id: 'pages.execPlan.defination.case.not.selected', }));
@@ -359,6 +371,7 @@ const TestPlanForm = () => {
     strucObj.triggerTime = values.triggerTime;
     strucObj.cron = cronVal;
     strucObj.caseSet = targetKeys;
+    strucObj.triggerType = triggerType;
 
     const rs = await addOnePlan(strucObj);
     if (rs && rs.success.toString() === 'true') {
@@ -385,15 +398,6 @@ const TestPlanForm = () => {
         <StepsForm
           current={current}
           onCurrentChange={setCurrent}
-          // submitter={{
-          //   render: (props, dom) => {
-          //     if (props.step === 2) {
-          //       return null;
-          //     }
-
-          //     return dom;
-          //   },
-          // }}
           onFinish={async (values) => {
             const success = await handleSavePlanSubmit(values);
 
@@ -406,7 +410,6 @@ const TestPlanForm = () => {
               setFuncId(ALL);
               setFuncVal(ALL);
 
-
               setDoRepeat(false);
               setComponents(undefined);
               setCronFlag(undefined);
@@ -414,13 +417,6 @@ const TestPlanForm = () => {
               setTargetKeys([]);
               setDataToBeSaved(new Map())
               setCompTransfer(undefined);
-              // setFuncBondInNew(0);
-              // setAppValInNew(ALL);
-              // setApps([]);
-              // setModuleValInNew(ALL);
-              // setModulesInNew([]);
-              // setFuncValInNew(ALL);
-              // setFuncsInNew([]);
               return true;
             }
             message.error('失败');
@@ -430,9 +426,17 @@ const TestPlanForm = () => {
           <StepsForm.StepForm
             formRef={formRef}
             title={intl.formatMessage({ id: 'pages.caseMaintain.create.case.function.selection', })}
-            // initialValues={stepData}
+            // eslint-disable-next-line no-unused-vars
             onFinish={async (values) => {
-              switchToOneTime(true);
+              window.console.log('StepsForm.StepForm',values);
+              if(values.triggerType !== 'jenkins') {
+                generateTriggerInfo(true);
+                setRepeatModeDisabledFlag(false);
+              } else {
+                setComponents(undefined);
+                setRepeatModeDisabledFlag(true);
+              }
+
               return true;
             }}
           >
@@ -467,21 +471,30 @@ const TestPlanForm = () => {
                 ))}
               </Select>
             </Form.Item >
+            <Form.Item name="triggerType" label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}  required={true} rules={[{ required: true, message: 'Please select a app' }]}>
+              <Select id="triggerType" name="triggerType"  options={triggerTypes} style={{ width: '40%' }} placeholder="Please select a function" value={triggerType} onChange={handleTriggerTypeChange} onDropdownVisibleChange={handleTriggerTypeDropDownChange}
+              >
+              </Select>
+            </Form.Item >
           </StepsForm.StepForm>
 
           <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.details', })} style={{ width: 750 }}
             onFinish={async (values) => {
+              window.console.log('S2 =====', values);
               const map = new Map();
               map.set('testName', values.testName);
               map.set('testType', values.testType);
               map.set('casePriority', values.casePriority);
-              map.set('repeatFlag', values.repeatFlag);
-              if (values.repeatFlag) {
-                map.set('triggerTime', cronVal);
-                cronValExplain(cronVal);
-              } else {
-                map.set('triggerTime', values.triggerTime);
-              }
+              map.set('triggerType', triggerType);
+              if (triggerType === 'scheduling') {
+                map.set('repeatFlag', values.repeatFlag);
+                if (values.repeatFlag) {
+                  map.set('triggerTime', cronVal);
+                  cronValExplain(cronVal);
+                } else {
+                  map.set('triggerTime', values.triggerTime);
+                }
+              } 
               setDataToBeSaved(map);
 
               const checkFlag = await detailsInS2Check(values);
@@ -518,7 +531,7 @@ const TestPlanForm = () => {
               }}
             />
             <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <Switch checkedChildren unCheckedChildren defaultChecked onChange={switchToOneTime} />
+              <Switch checkedChildren unCheckedChildren defaultChecked onChange={generateTriggerInfo} disabled={repeatModeDisabledFlag}/>
             </Form.Item >
             {components}
           </StepsForm.StepForm>
@@ -536,7 +549,7 @@ const TestPlanForm = () => {
             {compTransfer}
           </StepsForm.StepForm>
           <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.execPlan.defination.cases.set.confirm', })}>
-            <InfoBoard appVal={appVal} moduleVal={moduleVal} funcVal={funcVal} name={dataToBeSaved.get('testName')} testType={dataToBeSaved.get('testType')} priority={dataToBeSaved.get('casePriority')} repeat={dataToBeSaved.get('repeatFlag') ? 'YES' : 'NO'} triggerTime={dataToBeSaved.get('triggerTime')} caseSize={targetKeys.length} cron={cronFlag}></InfoBoard>
+            <InfoBoard appVal={appVal} moduleVal={moduleVal} funcVal={funcVal} name={dataToBeSaved.get('testName')} testType={dataToBeSaved.get('testType')} priority={dataToBeSaved.get('casePriority')} repeat={dataToBeSaved.get('repeatFlag') ? 'YES' : 'NO'} triggerTime={dataToBeSaved.get('triggerTime')} triggerType={dataToBeSaved.get('triggerType')} caseSize={targetKeys.length} cron={cronFlag}></InfoBoard>
           </StepsForm.StepForm>
         </StepsForm>
       </Card>

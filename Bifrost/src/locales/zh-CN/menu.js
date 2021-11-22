@@ -85,9 +85,7 @@ export default {
   'menu.execPlan.create.mindMap': '脑图模式',
   'menu.execPlan.create.single': '手工模式',
   'menu.execPlan.dashboard': '测试计划查询',
-  'menu.execHistory': '测试执行历史',
-  'menu.execHistory.create': '测试执行历史创建',
-  'menu.execHistory.dashboard': '测试执行历史查询',
-  'menu.execHistory.create.mindMap': '脑图模式',
-  'menu.execHistory.create.single': '手工模式',
+  'menu.execHistory': '测试执行',
+  'menu.execHistory.queue': '测试执行队列',
+  'menu.execHistory.history': '测试执行历史查询',
 };
