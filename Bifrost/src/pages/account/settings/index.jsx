@@ -1,6 +1,7 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
+import AuthView from './components/auth';
 import BaseView from './components/base';
 import BindingView from './components/binding';
 import NotificationView from './components/notification';
@@ -11,6 +12,7 @@ const { Item } = Menu;
 const Settings = () => {
   const menuMap = {
     base: '基本设置',
+    auth: '权限管理',
     security: '安全设置',
     binding: '账号绑定',
     notification: '新消息通知',
@@ -66,6 +68,8 @@ const Settings = () => {
 
       case 'security':
         return <SecurityView />;
+      case 'auth':
+        return <AuthView />;
 
       case 'binding':
         return <BindingView />;

@@ -1,4 +1,4 @@
-import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
+import { Avatar, Card, Col, List, Skeleton, Row } from 'antd';
 import { Link, useRequest } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import moment from 'moment';
