@@ -1,26 +1,23 @@
-import { AlipayOutlined, DingdingOutlined, TaobaoOutlined } from '@ant-design/icons';
+import { SlackSquareOutlined, CodepenOutlined, GithubOutlined } from '@ant-design/icons';
 import { List } from 'antd';
 import React, { Fragment } from 'react';
 
 const BindingView = () => {
   const getData = () => [
     {
-      title: '绑定淘宝',
-      description: '当前未绑定淘宝账号',
+      title: '绑定GitHub',
       actions: [<a key="Bind">绑定</a>],
-      avatar: <TaobaoOutlined className="taobao" />,
+      avatar: <GithubOutlined  className="alipay" />,
     },
     {
-      title: '绑定支付宝',
-      description: '当前未绑定支付宝账号',
+      title: '绑定Slack',
       actions: [<a key="Bind">绑定</a>],
-      avatar: <AlipayOutlined className="alipay" />,
+      avatar: <SlackSquareOutlined className="alipay" />,
     },
     {
-      title: '绑定钉钉',
-      description: '当前未绑定钉钉账号',
+      title: '绑定CodePen',
       actions: [<a key="Bind">绑定</a>],
-      avatar: <DingdingOutlined className="dingding" />,
+      avatar: <CodepenOutlined className="alipay" />,
     },
   ];
 
