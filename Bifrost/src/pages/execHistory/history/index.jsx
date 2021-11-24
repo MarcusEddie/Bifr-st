@@ -121,13 +121,13 @@ const ExecHistoryList = () => {
     {
       title: intl.formatMessage({ id: 'pages.execHistory.result.summary', }),
       dataIndex: 'details',
-      width: 80,
+      width: 120,
       hideInSearch: true,
       valueType: 'jsonCode',
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', }),
-      width: 60,
+      width: 40,
       dataIndex: 'priority',
       hideInSearch: true,
       // fixed: 'left',
@@ -228,6 +228,7 @@ const ExecHistoryList = () => {
       <ProTable
         actionRef={actionRef}
         columns={columns}
+        scroll={{ x: 1000, y: 850 }} 
         rowKey="key"
         pagination={{
           showSizeChanger: true,

@@ -93,7 +93,7 @@ const ExecutionDetails = (props) => {
   ];
 
   return (
-    <ProTable columns={columns} scroll={{ x: 1000, y: 650 }} table-layout="fixed"
+    <ProTable columns={columns} scroll={{ x: 1000, y: 850 }} table-layout="fixed"
       request={loadingData}
       rowKey="id"
       actionRef={actionRef}

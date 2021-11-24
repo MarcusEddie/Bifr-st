@@ -312,13 +312,13 @@ const TestCasesList = () => {
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', }),
       dataIndex: 'name',
-      width: '20%',
+      width: '19%',
       hideInTable: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', }),
       dataIndex: 'priority',
-      width: '5%',
+      width: '15%',
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       request: async () => {
@@ -329,7 +329,7 @@ const TestCasesList = () => {
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', }),
       dataIndex: 'resultCheckMode',
-      width: '5%',
+      width: '10%',
       initialValue: intl.formatMessage({ id: 'pages.caseMaintain.DropList.all', }),
       hideInTable: true,
       request: async () => {
@@ -356,7 +356,7 @@ const TestCasesList = () => {
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', }),
-      width: 60,
+      width: 65,
       dataIndex: 'priority',
       hideInSearch: true,
       fixed: 'left',
@@ -418,7 +418,7 @@ const TestCasesList = () => {
     },
     {
       title: intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', }),
-      width: 130,
+      width: 170,
       dataIndex: 'resultCheckMode',
       hideInSearch: true,
       valueEnum: {
@@ -455,7 +455,7 @@ const TestCasesList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      idth: '10%',
+      width: 350,
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;
@@ -495,7 +495,7 @@ const TestCasesList = () => {
 
   return (
     <PageContainer>
-      <ProTable columns={columns} scroll={{ x: 1500, y: 600 }}
+      <ProTable columns={columns} scroll={{ x: 1500, y: 850 }}
         actionRef={actionRef}
         request={loadingData}
         rowKey="id"

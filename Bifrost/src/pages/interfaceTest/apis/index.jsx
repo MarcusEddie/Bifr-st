@@ -370,7 +370,7 @@ const ApisList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      idth: '10%',
+      width: '15%',
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;
@@ -414,7 +414,7 @@ const ApisList = () => {
 
   return (
     <PageContainer>
-      <ProTable columns={columns} scroll={{ x: 1500, y: 600 }}
+      <ProTable columns={columns} scroll={{ x: 1500, y: 850 }}
         actionRef={actionRef}
         request={loadingData}
         rowKey="id"

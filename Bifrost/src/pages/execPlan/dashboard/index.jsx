@@ -389,7 +389,7 @@ const PlanList = () => {
     },
     {
       title: intl.formatMessage({ id: 'pages.execPlan.plan.size', }),
-      width: 50,
+      width: 60,
       dataIndex: 'caseSize',
       hideInSearch: true,
       ellipsis: true,
@@ -441,7 +441,7 @@ const PlanList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      width: '12%',
+      width: '14%',
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;
@@ -517,7 +517,7 @@ const PlanList = () => {
 
   return (
     <PageContainer>
-      <ProTable columns={columns} scroll={{ x: 1500, y: 1000 }}
+      <ProTable columns={columns} scroll={{ x: 1500, y: 850 }}
         actionRef={actionRef}
         request={loadingData}
         rowKey="id"

@@ -271,6 +271,7 @@ const TaskQueue = () => {
       <ProTable
         actionRef={actionRef}
         columns={columns}
+        scroll={{ x: 1000, y: 800 }} 
         rowKey="key"
         pagination={{
           showSizeChanger: true,

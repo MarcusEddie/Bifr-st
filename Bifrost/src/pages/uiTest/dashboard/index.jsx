@@ -396,7 +396,7 @@ const TestCasesList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      idth: '10%',
+      width: '14%',
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;

@@ -267,7 +267,7 @@ const TestCasesList = () => {
       title: intl.formatMessage({ id: 'pages.caseMaintain.dashboard.actions', }),
       dataIndex: 'option',
       valueType: 'option',
-      width: '13%',
+      width: '19%',
       fixed: 'right',
       render: (_, record) => {
         let updateFlag = false;
@@ -322,7 +322,7 @@ const TestCasesList = () => {
 
   return (
     <PageContainer>
-      <ProTable columns={columns} scroll={{ x: 1500, y: 600 }}
+      <ProTable columns={columns} scroll={{ x: 1500, y: 850 }}
         actionRef={actionRef}
         request={loadingData}
         rowKey="id"
