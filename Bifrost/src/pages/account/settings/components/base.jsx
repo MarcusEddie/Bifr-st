@@ -13,7 +13,7 @@ const BaseView = () => {
   });
 
   const handleFinish = async () => {
-    message.success('更新基本信息成功');
+    message.success('Update basic info successfully');
   };
 
   return (
@@ -31,7 +31,7 @@ const BaseView = () => {
                   },
                 },
                 submitButtonProps: {
-                  children: '更新基本信息',
+                  children: 'Basic info update',
                 },
               }}
               initialValues={{ ...currentUser, phone: currentUser?.phone.split('-') }}
@@ -40,11 +40,11 @@ const BaseView = () => {
               <ProFormText
                 width="md"
                 name="email"
-                label="邮箱"
+                label="E-mails"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的邮箱!',
+                    message: 'Please input your email!',
                   },
                 ]}
               />

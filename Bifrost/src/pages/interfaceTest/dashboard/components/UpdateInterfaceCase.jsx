@@ -240,11 +240,11 @@ const UpdateInterfaceCase = (props) => {
           casePriority: rowSelected.values.priority,
         }}
       >
-        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
           <Input id="caseName" maxLength={255}></Input>
         </Form.Item >
         <ProFormSelect name="casePriority" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', })} width="sm" className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           request={async () => {
             const ops = await loadingPriority();
             return ops;
@@ -267,7 +267,7 @@ const UpdateInterfaceCase = (props) => {
         }}
       >
         <ProFormSelect name="caseCheckMethod" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', })} className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           fieldProps={{
             onChange: (value) => { handleOnModeChange(value) },
             allowClear: false

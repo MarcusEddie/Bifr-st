@@ -256,7 +256,7 @@ const AddUiCase = (props) => {
         }}
         style={{ height: 750 }}
       >
-        <Form.Item name="pageSelected" label={intl.formatMessage({ id: 'pages.uiTest.create.newCase.page', })} required={true} rules={[{ required: true, message: 'Please select a app' }]} style={{ width: '100%' }}>
+        <Form.Item name="pageSelected" label={intl.formatMessage({ id: 'pages.uiTest.create.newCase.page', })} required={true} rules={[{ required: true, message: 'Please select a page' }]} style={{ width: '100%' }}>
           <Select id="pageSelected" showSearch style={{ width: '100%' }} placeholder="Please select a page" optionFilterProp="children" onChange={handleAppChangeInNew} onDropdownVisibleChange={handleDropDownChange}
             filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
@@ -268,11 +268,11 @@ const AddUiCase = (props) => {
         </Form.Item >
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.steps.settup', })} style={{ height: 750 }}>
-        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
           <Input id="caseName" maxLength={255}></Input>
         </Form.Item >
         <ProFormSelect name="casePriority" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', })} width="sm" className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           request={async () => {
             const ops = await loadingPriority();
             return ops;
@@ -290,7 +290,7 @@ const AddUiCase = (props) => {
         </ProFormTextArea>
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.rs.settup', })} style={{ height: 750 }}>
-        <Form.Item name="caseResult" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', })} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseResult" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', })} rules={[{ required: true, message: 'Please input a result!' }]}>
           <ProFormTextArea name="caseResult" id="caseResult" fieldProps={{ maxLength: 5000, autoSize: { minRows: 10, maxRows: 10 }, showCount: true, allowClear: true }}
           ></ProFormTextArea>
         </Form.Item>

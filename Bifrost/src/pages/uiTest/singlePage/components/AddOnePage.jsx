@@ -225,10 +225,10 @@ const AddOnePage = () => {
         </Form.Item >
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.uiTest.pages.defination.details.setup', })} style={{ height: 750 }}>
-        <Form.Item name="pageName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="pageName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
           <Input id="pageName" maxLength={255}></Input>
         </Form.Item >
-        <Form.Item name="pageUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="pageUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please input a url!' }]}>
           <Input id="pageUrl" maxLength={255}></Input>
         </Form.Item >
       </StepsForm.StepForm>

@@ -356,8 +356,8 @@ const AddInterfaceCase = (props) => {
         }}
         style={{ height: 750 }}
       >
-        <Form.Item name="apiSelected" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', })} required={true} rules={[{ required: true, message: 'Please select a app' }]} style={{ width: '100%' }}>
-          <Select id="apiSelected" showSearch style={{ width: '100%' }} placeholder="Please select a app" optionFilterProp="children" onChange={handleAppChangeInNew} onDropdownVisibleChange={handleDropDownChange}
+        <Form.Item name="apiSelected" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api', })} required={true} rules={[{ required: true, message: 'Please select a api' }]} style={{ width: '100%' }}>
+          <Select id="apiSelected" showSearch style={{ width: '100%' }} placeholder="Please select a api" optionFilterProp="children" onChange={handleAppChangeInNew} onDropdownVisibleChange={handleDropDownChange}
             filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
           >
@@ -379,11 +379,11 @@ const AddInterfaceCase = (props) => {
         </Form.Item >
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.steps.settup', })} style={{ height: 750 }}>
-        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
           <Input id="caseName" maxLength={255}></Input>
         </Form.Item >
         <ProFormSelect name="casePriority" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', })} width="sm" className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           request={async () => {
             const ops = await loadingPriority();
             return ops;
@@ -392,7 +392,7 @@ const AddInterfaceCase = (props) => {
             allowClear: false
           }}
         />
-        <ProFormTextArea label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} name="caseSteps" id="caseSteps" rules={[{ required: true, message: '请输入您的所在省!', },]}
+        <ProFormTextArea label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} name="caseSteps" id="caseSteps" rules={[{ required: true, message: 'Please input a step!', },]}
           fieldProps={{ maxLength: 5000, autoSize: { minRows: 10, maxRows: 10 }, showCount: true, allowClear: true }}
         ></ProFormTextArea>
         <ProFormTextArea label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step.params', })} name="caseParams" id="caseParams"
@@ -402,7 +402,7 @@ const AddInterfaceCase = (props) => {
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.rs.settup', })} style={{ height: 750 }}>
         <ProFormSelect name="caseCheckMethod" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result.checkMode', })} className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           fieldProps={{
             onChange: (value) => { handleOnModeChange(value) },
             allowClear: false

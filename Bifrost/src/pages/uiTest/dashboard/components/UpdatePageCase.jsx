@@ -146,7 +146,7 @@ const UpdatePageCase = (props) => {
           casePriority: rowSelected.values.priority,
         }}
       >
-        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseName" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
           <Input id="caseName" maxLength={255}></Input>
         </Form.Item >
         <ProFormSelect name="casePriority" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', })} width="sm" className={styles.item}
@@ -168,7 +168,7 @@ const UpdatePageCase = (props) => {
         </ProFormTextArea>
       </StepsForm.StepForm>
       <StepsForm.StepForm title={intl.formatMessage({ id: 'pages.interfaceTest.create.case.rs.update', })} style={{ height: 750 }}>
-        <Form.Item name="caseResult" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', })} rules={[{ required: true, message: 'Please select your function!' }]}>
+        <Form.Item name="caseResult" label={intl.formatMessage({ id: 'pages.interfaceTest.create.case.result', })} rules={[{ required: true, message: 'Please input a result!' }]}>
           <ProFormTextArea name="caseResult" id="caseResult" fieldProps={{ maxLength: 5000, autoSize: { minRows: 8, maxRows: 8 }, showCount: true, allowClear: true }} initialValue={rowSelected.values.expectedResult}
           ></ProFormTextArea>
         </Form.Item>

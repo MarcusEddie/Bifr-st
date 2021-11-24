@@ -53,7 +53,6 @@ class Save extends React.Component {
     }
 
     const hasEmptyNodes = async (data) => {
-      // {"jsonData":{"roots":[{"label":"请输入一个功能名称","children":[],"id":"3461ad76"}]}}
       const queue = [];
       let rs = false;
       queue.push(data.roots[0]);

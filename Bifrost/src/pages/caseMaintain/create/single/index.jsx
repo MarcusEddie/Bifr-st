@@ -401,7 +401,7 @@ const SingleForm = () => {
             },
           }}
         >
-          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })} required={true} rules={[{ required: true, message: 'Please select a module' }]}>
+          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.app', })} required={true} rules={[{ required: true, message: 'Please select a app' }]}>
             <Select id="addNewApp" showSearch name="addNewApp" mode="tags" style={{ width: '100%' }} placeholder="Please select a app" value={appValInPop} onChange={handleAppChangeInAddPop}>
               {appsInPop && appsInPop.map((app) => (
                 <Option key={app.id} label={app.id}>{app.name}</Option>
@@ -415,7 +415,7 @@ const SingleForm = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })} required={true} rules={[{ required: true, message: 'Please select a module' }]}>
+          <Form.Item label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })} required={true} rules={[{ required: true, message: 'Please select a function' }]}>
             <Input id="addNewFunc" name="addNewFunc" style={{ width: '100%' }} placeholder="Please input a function" defaultValue={funcValInAddPop} onChange={handleFuncChangeInAddPop}></Input>
           </Form.Item>
         </ModalForm>
@@ -566,19 +566,19 @@ const SingleForm = () => {
                 }}
               />
             </div>
-            <Form.Item name="caseNameForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="caseNameForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}>
               <Input id="caseName" showCount maxLength={255}></Input>
             </Form.Item >
 
-            <Form.Item name="caseDesriptionForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="caseDesriptionForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.description', })} required={true} rules={[{ required: true, message: 'Please input a description!' }]}>
               <TextArea id="caseDesription" showCount maxLength={500}></TextArea>
             </Form.Item >
 
-            <Form.Item name="caseStepsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="caseStepsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.step', })} required={true} rules={[{ required: true, message: 'Please input steps!' }]}>
               <TextArea id="caseSteps" showCount maxLength={2000}></TextArea>
             </Form.Item >
 
-            <Form.Item name="caseExpectedRsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="caseExpectedRsForm" label={intl.formatMessage({ id: 'pages.caseMaintain.create.case.result', })} required={true} rules={[{ required: true, message: 'Please input expected results!' }]}>
               <TextArea id="caseExpectedRs" showCount maxLength={255}></TextArea>
             </Form.Item >
           </StepsForm.StepForm>

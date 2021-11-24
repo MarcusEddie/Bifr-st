@@ -182,7 +182,7 @@ const TestPlanForm = () => {
       rs = <><SchedulingForm viewModalVisible={!checked} rtnCron={checkAndSaveCron}></SchedulingForm></>
       setComponents(rs);
     } else {
-      rs = <ProFormDateTimePicker name="triggerTime" rules={[{ required: true, message: 'Please select your country!' }]} fieldProps={{
+      rs = <ProFormDateTimePicker name="triggerTime" rules={[{ required: true, message: 'Please select a trigger time!' }]} fieldProps={{
         inputReadOnly: true
       }} label={intl.formatMessage({ id: 'pages.execPlan.defination.trigger.time', })} />
       setComponents(rs);
@@ -471,8 +471,8 @@ const TestPlanForm = () => {
                 ))}
               </Select>
             </Form.Item >
-            <Form.Item name="triggerType" label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}  required={true} rules={[{ required: true, message: 'Please select a app' }]}>
-              <Select id="triggerType" name="triggerType"  options={triggerTypes} style={{ width: '40%' }} placeholder="Please select a function" value={triggerType} onChange={handleTriggerTypeChange} onDropdownVisibleChange={handleTriggerTypeDropDownChange}
+            <Form.Item name="triggerType" label={intl.formatMessage({ id: 'pages.caseMaintain.create.single.function', })}  required={true} rules={[{ required: true, message: 'Please select a trigger type' }]}>
+              <Select id="triggerType" name="triggerType"  options={triggerTypes} style={{ width: '40%' }} placeholder="Please select a trigger type" value={triggerType} onChange={handleTriggerTypeChange} onDropdownVisibleChange={handleTriggerTypeDropDownChange}
               >
               </Select>
             </Form.Item >
@@ -511,7 +511,7 @@ const TestPlanForm = () => {
               <Input id="testName" maxLength={255}></Input>
             </Form.Item >
             <ProFormSelect name="testType" label={intl.formatMessage({ id: 'pages.execPlan.defination.test.type', })} width="sm" className={styles.item}
-              rules={[{ required: true, message: '请输入您的所在省!', },]}
+              rules={[{ required: true, message: 'Please select a test type!', },]}
               request={async () => {
                 const ops = await loadingTestTypes();
                 return ops;
@@ -521,7 +521,7 @@ const TestPlanForm = () => {
               }}
             />
             <ProFormSelect name="casePriority" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.priority', })} width="sm" className={styles.item}
-              rules={[{ required: true, message: '请输入您的所在省!', },]}
+              rules={[{ required: true, message: 'Please select a priority!', },]}
               request={async () => {
                 const ops = await loadingPriority();
                 return ops;
@@ -530,7 +530,7 @@ const TestPlanForm = () => {
                 allowClear: false
               }}
             />
-            <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue={true} rules={[{ required: true, message: 'Please select your function!' }]}>
+            <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue={true} rules={[{ required: true, message: 'Please select your repeat options!' }]}>
               <Switch checkedChildren="Y" unCheckedChildren="N" defaultChecked onChange={generateTriggerInfo} disabled={repeatModeDisabledFlag}/>
             </Form.Item >
             {components}

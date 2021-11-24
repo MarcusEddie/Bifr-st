@@ -93,7 +93,7 @@ const UpdateMySQL = (props) => {
 
   return (
     <Form form={form} >
-      <Form.Item name="dbName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]}
+      <Form.Item name="dbName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]}
         initialValue={data.name}
       >
         <Input id="dbName" maxLength={255} onChange={syncDataToRootNode}></Input>
@@ -101,19 +101,19 @@ const UpdateMySQL = (props) => {
       <Input.Group >
         <Row gutter={32}>
           <Col span={18}>
-            <Form.Item name="dbUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={data.host}>
+            <Form.Item name="dbUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please input a url!' }]} initialValue={data.host}>
               <Input id="dbUrl" maxLength={255} onChange={(e) => { generateConnectionURL(e, 'dbUrl') }}></Input>
             </Form.Item >
           </Col>
           <Col span={6}>
-            <Form.Item name="dbPort" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.port', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={data.port}>
+            <Form.Item name="dbPort" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.port', })} required={true} rules={[{ required: true, message: 'Please input a port!' }]} initialValue={data.port}>
               <Input id="dbPort" maxLength={255} onChange={(e) => { generateConnectionURL(e, 'dbPort') }}></Input>
             </Form.Item >
           </Col>
         </Row>
         <Row gutter={32}>
           <Col span={18}>
-            <Form.Item name="db" label={intl.formatMessage({ id: 'pages.interfaceTest.db', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={data.db}>
+            <Form.Item name="db" label={intl.formatMessage({ id: 'pages.interfaceTest.db', })} required={true} rules={[{ required: true, message: 'Please input a db!' }]} initialValue={data.db}>
               <Input id="db" maxLength={255} onChange={(e) => { generateConnectionURL(e, 'db') }}></Input>
             </Form.Item >
           </Col>
@@ -122,7 +122,7 @@ const UpdateMySQL = (props) => {
           <Input id="URL" maxLength={255} onChange={(e) => { parseHostAndPortFromURL(e) }}></Input>
         </Form.Item >
       </Input.Group>
-      <Form.Item name="userName" label={intl.formatMessage({ id: 'pages.interfaceTest.db.connection.username', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={data.userName}>
+      <Form.Item name="userName" label={intl.formatMessage({ id: 'pages.interfaceTest.db.connection.username', })} required={true} rules={[{ required: true, message: 'Please input a username!' }]} initialValue={data.userName}>
         <Input id="userName" maxLength={255} onChange={syncDataToRootNode}></Input>
       </Form.Item >
       <Form.Item name="password" label={intl.formatMessage({ id: 'pages.interfaceTest.db.connection.password', })}>

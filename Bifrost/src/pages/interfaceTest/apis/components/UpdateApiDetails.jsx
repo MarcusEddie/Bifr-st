@@ -281,17 +281,17 @@ const UpdateApiDetails = (props) => {
           return false;
         }}
       >
-        <Form.Item name="apiName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={rowSelected.values.name}>
+        <Form.Item name="apiName" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.name', })} required={true} rules={[{ required: true, message: 'Please input a name!' }]} initialValue={rowSelected.values.name}>
           <Input id="apiName" maxLength={255} ></Input>
         </Form.Item >
-        <Form.Item name="apiUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={rowSelected.values.url}>
+        <Form.Item name="apiUrl" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.url', })} required={true} rules={[{ required: true, message: 'Please input a url!' }]} initialValue={rowSelected.values.url}>
           <Input id="apiUrl" maxLength={255}  ></Input>
         </Form.Item >
-        <Form.Item name="apiPath" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.path', })} required={true} rules={[{ required: true, message: 'Please select your function!' }]} initialValue={rowSelected.values.path}>
+        <Form.Item name="apiPath" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.path', })} required={true} rules={[{ required: true, message: 'Please input a path!' }]} initialValue={rowSelected.values.path}>
           <Input id="apiPath" maxLength={255} ></Input>
         </Form.Item >
         <ProFormSelect name="apiMethod" label={intl.formatMessage({ id: 'pages.interfaceTest.create.newCase.api.method', })} width="sm" className={styles.item}
-          rules={[{ required: true, message: '请输入您的所在省!', },]}
+          rules={[{ required: true, message: 'Is required!', },]}
           request={async () => {
             const ops = await loadingApiMethod();
             return ops;

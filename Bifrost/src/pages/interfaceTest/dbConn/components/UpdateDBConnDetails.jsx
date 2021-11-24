@@ -157,7 +157,7 @@ const UpdateDBConnDetails = (props) => {
             ))}
           </Select>
         </Form.Item >
-        <Form.Item name="dbType" label={intl.formatMessage({ id: 'pages.interfaceTest.db.type', })} required={true} rules={[{ required: true, message: 'Please select a app' }]} initialValue={data.dbType}>
+        <Form.Item name="dbType" label={intl.formatMessage({ id: 'pages.interfaceTest.db.type', })} required={true} rules={[{ required: true, message: 'Please select a dbtype' }]} initialValue={data.dbType}>
           <Select id="dbType" name="dbType" showSearch style={{ width: '100%' }} placeholder="请选择" optionFilterProp="children" onChange={handleDbTypeChange} onDropdownVisibleChange={handleDBTypeDropDownChange}
             filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
