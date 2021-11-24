@@ -135,7 +135,7 @@ const MindMap = () => {
             </Col>
           </Row>
           <MindContextMenu />
-          <Save submitBtnName={intl.formatMessage({ id: 'pages.caseMaintain.action.new', })} resetBtnName={intl.formatMessage({ id: 'pages.caseMaintain.create.case.cancel', })}
+          <Save submitBtnName={intl.formatMessage({ id: 'pages.caseMaintain.create.case.submit', })} resetBtnName={intl.formatMessage({ id: 'pages.caseMaintain.create.case.cancel', })}
             successMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.success', })} failedMsg={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.fail', })} initVal={intl.formatMessage({ id: 'pages.caseMaintain.create.mind.batchMode.initVal', })} 
             functionId={funcIdSelected}/>
         </GGEditor>

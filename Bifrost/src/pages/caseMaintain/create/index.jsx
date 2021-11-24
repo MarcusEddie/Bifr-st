@@ -12,7 +12,7 @@ const tabList = [
     //     })}
     //   </span>
     // ),
-    tab: 'MIND',
+    tab: 'Mind Graph',
   },
   {
     key: 'single',
@@ -23,7 +23,7 @@ const tabList = [
     //     })}
     //   </span>
     // ),
-    tab: 'SINGLE',
+    tab: 'Manual',
   },
 ];
 

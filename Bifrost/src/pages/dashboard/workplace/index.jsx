@@ -94,9 +94,9 @@ const Workplace = () => {
             style={{
               marginBottom: 24,
             }}
-            title="进行中的项目"
+            title="Projects in progress"
             bordered={false}
-            extra={<Link to="/">全部项目</Link>}
+            extra={<Link to="/">ALL</Link>}
             loading={projectLoading}
             bodyStyle={{
               padding: 0,
@@ -137,7 +137,7 @@ const Workplace = () => {
             }}
             bordered={false}
             className={styles.activeCard}
-            title="动态"
+            title="Moments"
             loading={activitiesLoading}
           >
             <List

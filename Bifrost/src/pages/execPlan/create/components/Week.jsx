@@ -14,17 +14,17 @@ const Week = (props) => {
   const plainOptions = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 
-  const plainOptionsN1 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const s1 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 
-  const plainOptionsN2 = ['Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const s2 = ['Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 
-  const plainOptionsN3 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const s3 = ['1', '2', '3', '4'];
 
 
-  const plainOptionsN4 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const plainOptionsN5 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const s4 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const s5 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 
   const [checkedList, setCheckedList] = React.useState([]);
@@ -32,15 +32,10 @@ const Week = (props) => {
   const [checkAll, setCheckAll] = React.useState(false);
   const [secondCheckBoxEnable, setSecondCheckBoxEnable] = React.useState(true);
   const [secondVal, setSecondVal] = React.useState(1);
-  const [s1, setS1] = React.useState(plainOptionsN1);
   const [s1Val, setS1Val] = React.useState('Mon');
-  const [s2, setS2] = React.useState(plainOptionsN2);
   const [s2Val, setS2Val] = React.useState('Tue');
-  const [s3, setS3] = React.useState(plainOptionsN3);
-  const [s3Val, setS3Val] = React.useState('Mon');
-  const [s4, setS4] = React.useState(plainOptionsN4);
+  const [s3Val, setS3Val] = React.useState('1');
   const [s4Val, setS4Val] = React.useState('Mon');
-  const [s5, setS5] = React.useState(plainOptionsN5);
   const [s5Val, setS5Val] = React.useState('Mon');
 
   const onCheckAllChange = e => {
@@ -99,7 +94,7 @@ const Week = (props) => {
           </Row>
           <Row >
             <Col span={8}>
-              <Radio value={4}>{intl.formatMessage({ id: 'pages.execPlan.cron.hour.period.hours.one', })}&nbsp;
+              <Radio value={4}>{intl.formatMessage({ id: 'pages.execPlan.cron.week.num.to.day.one', })}&nbsp;
               </Radio>
             </Col>
             <Col span={5}>

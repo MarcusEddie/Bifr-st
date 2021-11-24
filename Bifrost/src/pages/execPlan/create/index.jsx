@@ -531,7 +531,7 @@ const TestPlanForm = () => {
               }}
             />
             <Form.Item name="repeatFlag" label={intl.formatMessage({ id: 'pages.execPlan.defination.is.repeat', })} required={true} initialValue={true} rules={[{ required: true, message: 'Please select your function!' }]}>
-              <Switch checkedChildren unCheckedChildren defaultChecked onChange={generateTriggerInfo} disabled={repeatModeDisabledFlag}/>
+              <Switch checkedChildren="Y" unCheckedChildren="N" defaultChecked onChange={generateTriggerInfo} disabled={repeatModeDisabledFlag}/>
             </Form.Item >
             {components}
           </StepsForm.StepForm>
